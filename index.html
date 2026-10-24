@@ -33,7 +33,8 @@
       </h1>
       <nav class="flex gap-2 items-center" id="nav-links">
         <button onclick="showPage('map')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">🗺️ Stadtkarte</button>
-        <button onclick="showPage('todos')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">📋 To-Dos</button>
+        <button onclick="showPage('todos')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">📋 Alle To-Dos</button>
+        <button onclick="showPage('my-area')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">👤 Mein Bereich</button>
         <button onclick="showPage('properties')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">🏡 Grundstücke</button>
         <button id="admin-nav-btn" onclick="showPage('admin')" class="hidden text-amber-400 hover:text-amber-300 font-bold text-sm transition px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30">🛡️ Admin</button>
 
@@ -56,30 +57,45 @@
     <section id="page-map" class="page-content space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <h2 class="text-2xl font-black mb-1">🗺️ Trevenmark Base-Karte</h2>
-        <p class="text-slate-400 text-xs mb-4">Übersicht der Stadt, Bauabschnitte und eingezeichneten Grundstücke.</p>
+        <p class="text-slate-400 text-xs mb-4">Klicke auf ein Grundstück auf der Karte, um die zugehörigen To-Dos anzuzeigen!</p>
         
-        <!-- Karten-Container (Hier kannst später dein Base-Bild per CSS background oder img einbinden) -->
-        <div id="map-container" class="w-full h-[500px] bg-slate-950 rounded-xl border border-slate-800 relative overflow-hidden flex items-center justify-center">
-          <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
-          <div class="text-center p-6 z-10">
-            <span class="text-4xl">🏰</span>
-            <p class="text-slate-400 text-sm mt-2 font-bold">Kartenansicht aktiv</p>
-            <p class="text-slate-500 text-xs mt-1">Hier wird das Bild deiner Stadt-Base angezeigt.</p>
-          </div>
+        <!-- Interaktive Grundstücks-Liste auf der Karte -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4" id="map-property-selector">
+          <!-- Wählbare Grundstücke werden hier als Klick-Buttons geladen -->
+        </div>
+
+        <div id="selected-property-todos" class="bg-slate-950 p-4 rounded-xl border border-sky-500/30 hidden">
+          <h3 class="font-bold text-sky-400 text-sm mb-2" id="selected-property-title">To-Dos für dieses Grundstück</h3>
+          <div id="property-todo-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
         </div>
       </div>
     </section>
 
-    <!-- PAGE 2: TO-DOS -->
+    <!-- PAGE 2: ALLE TO-DOS -->
     <section id="page-todos" class="page-content hidden space-y-6">
       <div class="flex justify-between items-center bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <div>
-          <h2 class="text-2xl font-black">📋 Stadt To-Dos & Aufgaben</h2>
-          <p class="text-slate-400 text-xs mt-1">Nimm dir bis zu 3 Aufgaben vor, um Trevenmark aufzubauen! (<span id="active-todo-count">0</span>/3 aktiv)</p>
+          <h2 class="text-2xl font-black">📋 Alle Stadt To-Dos & Aufgaben</h2>
+          <p class="text-slate-400 text-xs mt-1">Hier siehst du alle verfügbaren Aufgaben der Stadt. (Limit: <span id="active-todo-count">0</span>/3 aktiv)</p>
         </div>
       </div>
       <div id="todos-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <p class="text-slate-500 text-sm">Lade To-Dos...</p>
+      </div>
+    </section>
+
+    <!-- PAGE 2.5: MEIN BEREICH (Persönliche To-Dos) -->
+    <section id="page-my-area" class="page-content hidden space-y-6">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+        <h2 class="text-2xl font-black">👤 Mein Bereich</h2>
+        <p class="text-slate-400 text-xs mt-1">Deine aktuell angenommenen To-Dos und persönliche Übersicht.</p>
+      </div>
+
+      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
+        <h3 class="font-bold text-lg mb-4 text-sky-400">🟡 Meine aktiven Aufgaben</h3>
+        <div id="my-todos-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <p class="text-slate-500 text-sm">Du hast aktuell keine To-Dos angenommen.</p>
+        </div>
       </div>
     </section>
 
@@ -109,19 +125,27 @@
         </div>
       </div>
 
-      <!-- To-Do Erstellen -->
+      <!-- To-Do Erstellen mit Grundstücks-Verknüpfung -->
       <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
         <h3 class="font-bold text-lg mb-3 text-sky-400">➕ Neues To-Do erstellen</h3>
         <form onsubmit="adminCreateTodo(event)" class="space-y-3 max-w-lg">
           <input type="text" id="new-todo-title" placeholder="Aufgaben-Titel" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
           <textarea id="new-todo-desc" placeholder="Beschreibung & Details" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" rows="2"></textarea>
+          
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Verknüpftes Grundstück (Optional):</label>
+            <select id="new-todo-property" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500">
+              <option value="">Kein Grundstück zugewiesen</option>
+            </select>
+          </div>
+
           <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition">To-Do erstellen</button>
         </form>
       </div>
 
       <!-- Grundstück Erstellen -->
       <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
-        <h3 class="font-bold text-lg mb-3 text-sky-400">🏡 Neues Grundstück einzeichnen</h3>
+        <h3 class="font-bold text-lg mb-3 text-sky-400">🏡 Neues Grundstück anlegen</h3>
         <form onsubmit="adminCreateProperty(event)" class="space-y-3 max-w-lg">
           <input type="text" id="new-prop-name" placeholder="Grundstücks-Name (z.B. Haus Plot #12)" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
           <input type="text" id="new-prop-coords" placeholder="Koordinaten / Zone (z.B. X: 200, Z: -450)" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
@@ -169,11 +193,14 @@
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let currentUser = null;
+    let allProperties = [];
 
     function showPage(pageId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(`page-${pageId}`).classList.remove('hidden');
+      if (pageId === 'map') loadMapProperties();
       if (pageId === 'todos') loadTodos();
+      if (pageId === 'my-area') loadMyArea();
       if (pageId === 'properties') loadProperties();
       if (pageId === 'admin') loadAdminPanel();
     }
@@ -196,6 +223,7 @@
           }
         }
       }
+      loadMapProperties();
       loadTodos();
     }
 
@@ -238,6 +266,48 @@
       location.reload();
     }
 
+    async function loadMapProperties() {
+      const { data: props } = await sb.from('properties').select('*');
+      allProperties = props || [];
+      const selector = document.getElementById('map-property-selector');
+
+      if (!props || props.length === 0) {
+        selector.innerHTML = '<p class="text-slate-500 text-xs col-span-full">Noch keine Grundstücke angelegt.</p>';
+        return;
+      }
+
+      selector.innerHTML = props.map(p => `
+        <button onclick="selectPropertyForMap(${p.id}, '${p.name}')" class="bg-slate-900 hover:bg-slate-800 p-4 rounded-xl border border-slate-800 text-left transition shadow-md group">
+          <p class="font-bold text-sky-400 group-hover:text-sky-300">🏡 ${p.name}</p>
+          <p class="text-xs text-slate-500 font-mono mt-1">📍 ${p.coordinates}</p>
+        </button>
+      `).join('');
+    }
+
+    async function selectPropertyForMap(propId, propName) {
+      const container = document.getElementById('selected-property-todos');
+      const title = document.getElementById('selected-property-title');
+      const list = document.getElementById('property-todo-list');
+
+      title.innerText = `To-Dos für Grundstück: ${propName}`;
+      container.classList.remove('hidden');
+
+      const { data: todos } = await sb.from('todos').select('*').eq('property_id', propId);
+
+      if (!todos || todos.length === 0) {
+        list.innerHTML = '<p class="text-slate-500 text-xs col-span-full">Keine To-Dos für dieses Grundstück hinterlegt.</p>';
+        return;
+      }
+
+      list.innerHTML = todos.map(t => `
+        <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs space-y-1">
+          <p class="font-bold text-white">${t.title}</p>
+          <p class="text-slate-400">${t.description || 'Keine Details'}</p>
+          <span class="inline-block px-2 py-0.5 rounded text-[10px] bg-slate-800 text-sky-400">${t.status}</span>
+        </div>
+      `).join('');
+    }
+
     async function loadTodos() {
       const { data: todos } = await sb.from('todos').select('*, properties(name, coordinates)');
       const list = document.getElementById('todos-list');
@@ -265,7 +335,7 @@
               <p class="text-xs text-slate-400 mb-4">${t.description || 'Keine Beschreibung'}</p>
             </div>
             <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
-              <span class="text-[11px] text-slate-500">Zuweisung: ${t.assigned_to ? 'Vergeben'  : 'Frei'}</span>
+              <span class="text-[11px] text-slate-500">Zuweisung: ${t.assigned_to ? 'Vergeben' : 'Frei'}</span>
               ${!t.assigned_to ? `<button onclick="acceptTodo(${t.id})" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Annehmen</button>` : ''}
               ${isAssignedToMe ? `<button onclick="finishTodo(${t.id})" class="bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Erledigen</button>` : ''}
             </div>
@@ -274,14 +344,46 @@
       }).join('');
     }
 
+    async function loadMyArea() {
+      if (!currentUser) {
+        document.getElementById('my-todos-list').innerHTML = '<p class="text-slate-500 text-sm">Bitte logge dich ein, um deine Aufgaben zu sehen.</p>';
+        return;
+      }
+
+      const { data: todos } = await sb.from('todos').select('*, properties(name, coordinates)').eq('assigned_to', currentUser.id);
+      const list = document.getElementById('my-todos-list');
+
+      const activeTodos = todos?.filter(t => t.status !== 'erledigt') || [];
+
+      if (activeTodos.length === 0) {
+        list.innerHTML = '<p class="text-slate-500 text-sm">Du hast aktuell keine aktiven To-Dos angenommen.</p>';
+        return;
+      }
+
+      list.innerHTML = activeTodos.map(t => `
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-bold text-white text-sm">${t.title}</p>
+              ${t.properties ? `<p class="text-xs text-sky-400">🏡 ${t.properties.name} (${t.properties.coordinates})</p>` : ''}
+              <p class="text-xs text-slate-400 mt-1">${t.description || 'Keine Beschreibung'}</p>
+            </div>
+            <button onclick="finishTodo(${t.id})" class="bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Erledigen</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
     async function acceptTodo(todoId) {
       if (!currentUser) return alert("Bitte logge dich ein!");
       if (!currentUser.is_approved) return alert("Dein Account ist noch nicht freigeschaltet!");
 
-      // Prüfen, ob User schon 3 aktive hat
-      const { data: myTodos } = await sb.from('todos').select('*').eq('assigned_to', currentUser.id).neq('status', 'erledigt');
-      if (myTodos && myTodos.length >= 3) {
-        return alert("Du kannst maximal 3 aktive To-Dos gleichzeitig haben!");
+      // Admins haben kein Limit, normale Spieler max. 3
+      if (currentUser.role !== 'admin') {
+        const { data: myTodos } = await sb.from('todos').select('*').eq('assigned_to', currentUser.id).neq('status', 'erledigt');
+        if (myTodos && myTodos.length >= 3) {
+          return alert("Du kannst als Spieler maximal 3 aktive To-Dos gleichzeitig haben!");
+        }
       }
 
       await sb.from('todos').update({ assigned_to: currentUser.id, status: 'in_bearbeitung' }).eq('id', todoId);
@@ -293,6 +395,7 @@
       await sb.from('todos').update({ status: 'erledigt' }).eq('id', todoId);
       alert("To-Do als erledigt markiert!");
       loadTodos();
+      loadMyArea();
     }
 
     async function loadProperties() {
@@ -331,6 +434,13 @@
       } else {
         pendingContainer.innerHTML = '<p class="text-slate-500 text-sm">Keine ausstehenden Registrierungen.</p>';
       }
+
+      // Dropdown für Grundstücke beim To-Do Erstellen füllen
+      const { data: props } = await sb.from('properties').select('*');
+      const propSelect = document.getElementById('new-todo-property');
+      if (props && props.length > 0) {
+        propSelect.innerHTML = '<option value="">Kein Grundstück zugewiesen</option>' + props.map(p => `<option value="${p.id}">${p.name} (${p.coordinates})</option>`).join('');
+      }
     }
 
     async function approveUser(userId) {
@@ -343,8 +453,9 @@
       e.preventDefault();
       const title = document.getElementById('new-todo-title').value;
       const description = document.getElementById('new-todo-desc').value;
+      const propertyId = document.getElementById('new-todo-property').value || null;
 
-      await sb.from('todos').insert([{ title, description, status: 'offen' }]);
+      await sb.from('todos').insert([{ title, description, property_id: propertyId, status: 'offen' }]);
       alert("To-Do erfolgreich erstellt!");
       document.getElementById('new-todo-title').value = '';
       document.getElementById('new-todo-desc').value = '';
@@ -361,6 +472,8 @@
       document.getElementById('new-prop-name').value = '';
       document.getElementById('new-prop-coords').value = '';
       loadProperties();
+      loadMapProperties();
+      loadAdminPanel();
     }
 
     init();
