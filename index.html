@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trevenmark - Stadtportal</title>
+  <title>Trevenmark – Minecraft City Portal</title>
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     tailwind.config = {
@@ -12,471 +14,354 @@
       theme: {
         extend: {
           colors: {
-            trevbg: '#0f172a',
-            trevcard: '#1e293b',
-            trevcardhover: '#334155',
-            trevaccent: '#38bdf8',
-            trevgreen: '#22c55e',
+            brand: { 500: '#6366f1', 600: '#4f46e5' }
           }
         }
       }
     }
   </script>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-  <!-- Header / Nav -->
-  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
-      <h1 class="text-xl font-black tracking-wide flex items-center gap-2">
-        <span class="text-sky-400">🏰 Trevenmark</span> <span class="text-xs text-slate-400 font-normal">Stadtportal</span>
-      </h1>
-      <nav class="flex gap-2 items-center" id="nav-links">
-        <button onclick="showPage('map')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">🗺️ Stadtkarte</button>
-        <button onclick="showPage('todos')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">📋 Alle To-Dos</button>
-        <button onclick="showPage('my-area')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">👤 Mein Bereich</button>
-        <button onclick="showPage('properties')" class="hover:text-sky-400 font-bold text-sm transition px-3 py-1.5 rounded-xl hover:bg-slate-800">🏡 Grundstücke</button>
-        <button id="admin-nav-btn" onclick="showPage('admin')" class="hidden text-amber-400 hover:text-amber-300 font-bold text-sm transition px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30">🛡️ Admin</button>
-
-        <div id="auth-buttons" class="ml-2 flex gap-2">
-          <button onclick="showModal('login-modal')" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded-xl font-black text-sm transition shadow-lg shadow-sky-600/30">Login</button>
-          <button onclick="showModal('register-modal')" class="bg-slate-800 hover:bg-slate-700 text-white font-extrabold px-4 py-1.5 rounded-xl text-sm transition border border-slate-700">Registrieren</button>
-        </div>
-        <div id="user-profile" class="hidden flex items-center gap-3 ml-2 bg-slate-800 p-1.5 px-3 rounded-xl border border-slate-700">
-          <span id="user-display-name" class="font-extrabold text-sm text-sky-400"></span>
-          <button onclick="logout()" class="text-xs text-slate-400 hover:text-red-400 font-medium transition">Ausloggen</button>
-        </div>
+  <!-- NAVIGATION -->
+  <header class="bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🏰</span>
+        <h1 class="text-xl font-black tracking-wider bg-gradient-to-r from-indigo-400 to-sky-400 bg-clip-text text-transparent">TREVENMARK</h1>
+      </div>
+      <nav class="hidden md:flex gap-6 text-sm font-semibold">
+        <button onclick="switchTab('map')" class="nav-btn text-indigo-400 hover:text-indigo-300 transition" data-target="page-map">🗺️ Stadtkarte</button>
+        <button onclick="switchTab('properties')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-properties">🏡 Grundstücke</button>
+        <button onclick="switchTab('todos')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-todos">📋 Aufgaben</button>
+        <button onclick="switchTab('dashboard')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-dashboard">👤 Mein Bereich</button>
+        <button id="admin-nav-btn" onclick="switchTab('admin')" class="nav-btn text-amber-400 hover:text-amber-300 transition hidden" data-target="page-admin">⚡ Admin-Panel</button>
       </nav>
+      <div id="auth-section" class="flex items-center gap-3">
+        <!-- Wird dynamisch gefüllt (Login/Register oder User-Info) -->
+      </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="max-w-6xl mx-auto w-full p-4 sm:p-6 flex-grow">
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-    <!-- PAGE 1: STADTKARTE -->
+    <!-- PAGE 1: STADTKARTE (BLUEMAP INTEGRATION) -->
     <section id="page-map" class="page-content space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-        <h2 class="text-2xl font-black mb-1">🗺️ Trevenmark Base-Karte</h2>
-        <p class="text-slate-400 text-xs mb-4">Klicke auf ein Grundstück auf der Karte, um die zugehörigen To-Dos anzuzeigen!</p>
+        <div class="flex justify-between items-center mb-4">
+          <div>
+            <h2 class="text-2xl font-black">🗺️ Trevenmark Live 3D-Karte</h2>
+            <p class="text-slate-400 text-xs mt-1">Interaktive 3D-Kartenansicht powered by BlueMap. Klicke unten auf ein Grundstück, um To-Dos anzuzeigen!</p>
+          </div>
+          <a href="https://diary-crispness-bagpipe.ngrok-free.dev" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center gap-1">
+            ↗️ In neuem Tab öffnen
+          </a>
+        </div>
         
-        <!-- Interaktive Grundstücks-Liste auf der Karte -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4" id="map-property-selector">
-          <!-- Wählbare Grundstücke werden hier als Klick-Buttons geladen -->
+        <!-- BlueMap Live Embed -->
+        <div class="w-full h-[600px] rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative bg-slate-950">
+          <iframe id="bluemap-frame" src="https://diary-crispness-bagpipe.ngrok-free.dev" class="w-full h-full border-0"></iframe>
         </div>
 
-        <div id="selected-property-todos" class="bg-slate-950 p-4 rounded-xl border border-sky-500/30 hidden">
+        <!-- Grundstücks-Auswahl für To-Dos -->
+        <div class="mt-6">
+          <h3 class="font-bold text-sm text-slate-300 mb-3">🏡 Eingezeichnete Grundstücke & Stadtzonen:</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="map-property-selector">
+            <!-- Grundstücke werden hier dynamisch geladen -->
+          </div>
+        </div>
+
+        <div id="selected-property-todos" class="bg-slate-950 p-4 rounded-xl border border-sky-500/30 hidden mt-4">
           <h3 class="font-bold text-sky-400 text-sm mb-2" id="selected-property-title">To-Dos für dieses Grundstück</h3>
           <div id="property-todo-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
         </div>
       </div>
     </section>
 
-    <!-- PAGE 2: ALLE TO-DOS -->
-    <section id="page-todos" class="page-content hidden space-y-6">
-      <div class="flex justify-between items-center bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+    <!-- PAGE 2: GRUNDSTÜCKE -->
+    <section id="page-properties" class="page-content space-y-6 hidden">
+      <div class="flex justify-between items-center">
         <div>
-          <h2 class="text-2xl font-black">📋 Alle Stadt To-Dos & Aufgaben</h2>
-          <p class="text-slate-400 text-xs mt-1">Hier siehst du alle verfügbaren Aufgaben der Stadt. (Limit: <span id="active-todo-count">0</span>/3 aktiv)</p>
+          <h2 class="text-2xl font-black">🏡 Grundstücke & Immobilien</h2>
+          <p class="text-slate-400 text-xs mt-1">Übersicht aller Grundstücke in Trevenmark.</p>
         </div>
+        <button onclick="openPropertyModal()" id="new-property-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition hidden">
+          + Grundstück hinzufügen
+        </button>
       </div>
-      <div id="todos-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <p class="text-slate-500 text-sm">Lade To-Dos...</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="properties-grid">
+        <!-- Grundstücke-Karten -->
       </div>
     </section>
 
-    <!-- PAGE 2.5: MEIN BEREICH (Persönliche To-Dos) -->
-    <section id="page-my-area" class="page-content hidden space-y-6">
+    <!-- PAGE 3: AUFGABEN (TODOS) -->
+    <section id="page-todos" class="page-content space-y-6 hidden">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-2xl font-black">📋 Aufgaben & To-Dos</h2>
+          <p class="text-slate-400 text-xs mt-1">Normale Spieler können max. 3 aktive Aufgaben gleichzeitig besitzen.</p>
+        </div>
+        <button onclick="openTodoModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+          + Aufgabe erstellen
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="todos-grid">
+        <!-- Aufgaben-Karten -->
+      </div>
+    </section>
+
+    <!-- PAGE 4: MEIN BEREICH (DASHBOARD) -->
+    <section id="page-dashboard" class="page-content space-y-6 hidden">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-        <h2 class="text-2xl font-black">👤 Mein Bereich</h2>
-        <p class="text-slate-400 text-xs mt-1">Deine aktuell angenommenen To-Dos und persönliche Übersicht.</p>
-      </div>
-
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
-        <h3 class="font-bold text-lg mb-4 text-sky-400">🟡 Meine aktiven Aufgaben</h3>
-        <div id="my-todos-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <p class="text-slate-500 text-sm">Du hast aktuell keine To-Dos angenommen.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PAGE 3: GRUNDSTÜCKE -->
-    <section id="page-properties" class="page-content hidden space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-        <h2 class="text-2xl font-black">🏡 Grundstücke & Häuser</h2>
-        <p class="text-slate-400 text-xs mt-1">Verfügbare und zugewiesene Grundstücke in der Stadt.</p>
-      </div>
-      <div id="properties-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <p class="text-slate-500 text-sm">Lade Grundstücke...</p>
-      </div>
-    </section>
-
-    <!-- PAGE 4: ADMIN PANEL -->
-    <section id="page-admin" class="page-content hidden space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-amber-500/30 shadow-xl">
-        <h2 class="text-2xl font-black text-amber-400">🛡️ Admin-Verwaltung (Trevenmark)</h2>
-        <p class="text-slate-400 text-xs mt-1">Spieler freischalten, Grundstücke und To-Dos verwalten.</p>
-      </div>
-
-      <!-- Account-Freigaben -->
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
-        <h3 class="font-bold text-lg mb-3 text-sky-400">👤 Ausstehende Account-Freigaben</h3>
-        <div id="admin-pending-users" class="space-y-3">
-          <p class="text-slate-500 text-sm">Keine ausstehenden Registrierungen.</p>
-        </div>
-      </div>
-
-      <!-- To-Do Erstellen mit Grundstücks-Verknüpfung -->
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
-        <h3 class="font-bold text-lg mb-3 text-sky-400">➕ Neues To-Do erstellen</h3>
-        <form onsubmit="adminCreateTodo(event)" class="space-y-3 max-w-lg">
-          <input type="text" id="new-todo-title" placeholder="Aufgaben-Titel" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-          <textarea id="new-todo-desc" placeholder="Beschreibung & Details" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" rows="2"></textarea>
-          
-          <div>
-            <label class="text-xs text-slate-400 block mb-1">Verknüpftes Grundstück (Optional):</label>
-            <select id="new-todo-property" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500">
-              <option value="">Kein Grundstück zugewiesen</option>
-            </select>
+        <h2 class="text-2xl font-black mb-2">👤 Mein Bereich</h2>
+        <p class="text-slate-400 text-xs mb-6">Deine persönlichen Statistiken und aktiven Aufgaben in Trevenmark.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
+            <h3 class="font-bold text-sm text-indigo-400 mb-3">📋 Meine aktiven To-Dos (<span id="my-active-count">0</span> / 3)</h3>
+            <div id="my-todos-list" class="space-y-3">
+              <!-- Dynamisch -->
+            </div>
           </div>
-
-          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition">To-Do erstellen</button>
-        </form>
+          <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
+            <h3 class="font-bold text-sm text-sky-400 mb-3">🏡 Meine Grundstücke</h3>
+            <div id="my-properties-list" class="space-y-3">
+              <!-- Dynamisch -->
+            </div>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <!-- Grundstück Erstellen -->
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
-        <h3 class="font-bold text-lg mb-3 text-sky-400">🏡 Neues Grundstück anlegen</h3>
-        <form onsubmit="adminCreateProperty(event)" class="space-y-3 max-w-lg">
-          <input type="text" id="new-prop-name" placeholder="Grundstücks-Name (z.B. Haus Plot #12)" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-          <input type="text" id="new-prop-coords" placeholder="Koordinaten / Zone (z.B. X: 200, Z: -450)" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition">Grundstück anlegen</button>
-        </form>
+    <!-- PAGE 5: ADMIN PANEL -->
+    <section id="page-admin" class="page-content space-y-6 hidden">
+      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
+        <h2 class="text-2xl font-black text-amber-400 mb-2">⚡ Admin-Verwaltung</h2>
+        <p class="text-slate-400 text-xs mb-6">Freigabe neuer Spieler und Benutzer-Management.</p>
+        
+        <h3 class="font-bold text-sm text-slate-300 mb-3">Ausstehende Registrierungen:</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-slate-950 text-slate-400 text-xs uppercase">
+              <tr>
+                <th class="p-3 rounded-l-lg">Ingame Name</th>
+                <th class="p-3">Discord</th>
+                <th class="p-3">Rolle</th>
+                <th class="p-3 rounded-r-lg text-right">Aktion</th>
+              </tr>
+            </thead>
+            <tbody id="admin-pending-users">
+              <!-- Dynamisch -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- MODALS -->
-  <div id="login-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 p-6 rounded-2xl max-w-md w-full border border-slate-800 shadow-2xl">
-      <h3 class="text-xl font-black mb-4">Einloggen</h3>
-      <form onsubmit="handleLogin(event)" class="space-y-3">
-        <input type="text" id="login-ingame" placeholder="Ingame Name" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-        <input type="password" id="login-pass" placeholder="Passwort" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-        <div class="flex justify-end gap-2 mt-4">
-          <button type="button" onclick="closeModal('login-modal')" class="px-4 py-2 text-slate-400 text-sm font-semibold">Abbrechen</button>
-          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white font-black px-5 py-2 rounded-xl text-sm transition">Login</button>
+  <!-- AUTH MODAL (LOGIN / REGISTER) -->
+  <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-md p-6 rounded-2xl shadow-2xl relative">
+      <h3 id="auth-modal-title" class="text-xl font-bold mb-4">Registrierung</h3>
+      <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Minecraft Ingame Name</label>
+          <input type="text" id="ign-input" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+        </div>
+        <div id="discord-field">
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Discord Tag</label>
+          <input type="text" id="discord-input" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500" placeholder="DeinName#0000">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Passwort</label>
+          <input type="password" id="pass-input" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+        </div>
+        <div class="flex justify-between items-center text-xs pt-2">
+          <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-indigo-400 hover:underline">Bereits registriert? Login</button>
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl transition">Absenden</button>
         </div>
       </form>
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-300">✕</button>
     </div>
   </div>
 
-  <div id="register-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 p-6 rounded-2xl max-w-md w-full border border-slate-800 shadow-2xl">
-      <h3 class="text-xl font-black mb-1">Account erstellen</h3>
-      <p class="text-xs text-slate-400 mb-4">Nach der Registrierung muss ein Admin deinen Account freischalten.</p>
-      <form onsubmit="handleRegister(event)" class="space-y-3">
-        <input type="text" id="reg-ingame" placeholder="Ingame Name (Minecraft)" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-        <input type="text" id="reg-discord" placeholder="Discord Name" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-        <input type="password" id="reg-pass" placeholder="Passwort" class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm outline-none focus:border-sky-500" required>
-        <div class="flex justify-end gap-2 mt-4">
-          <button type="button" onclick="closeModal('register-modal')" class="px-4 py-2 text-slate-400 text-sm font-semibold">Abbrechen</button>
-          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white font-black px-5 py-2 rounded-xl text-sm transition">Registrieren</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
+  <!-- SCRIPT LOGIK -->
   <script>
     const SUPABASE_URL = "https://lbskjucfzrodjhbpraac.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_CMsxSeOj_19-r3MAQo6r7g_zsrsgTQO";
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let currentUser = null;
-    let allProperties = [];
+    let isLoginMode = false;
 
-    function showPage(pageId) {
+    // Tabs umschalten
+    function switchTab(tabId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`page-${pageId}`).classList.remove('hidden');
-      if (pageId === 'map') loadMapProperties();
-      if (pageId === 'todos') loadTodos();
-      if (pageId === 'my-area') loadMyArea();
-      if (pageId === 'properties') loadProperties();
-      if (pageId === 'admin') loadAdminPanel();
+      document.getElementById('page-' + tabId).classList.remove('hidden');
+      
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-indigo-400', 'text-amber-400'));
+      const activeBtn = document.querySelector(`[data-target="page-${tabId}"]`);
+      if(activeBtn) activeBtn.classList.add(tabId === 'admin' ? 'text-amber-400' : 'text-indigo-400');
     }
 
-    function showModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function openAuthModal(login = false) {
+      isLoginMode = login;
+      document.getElementById('auth-modal-title').innerText = login ? 'Login' : 'Registrierung';
+      document.getElementById('discord-field').style.display = login ? 'none' : 'block';
+      document.getElementById('auth-switch-btn').innerText = login ? 'Noch kein Konto? Registrieren' : 'Bereits registriert? Login';
+      document.getElementById('auth-modal').classList.remove('hidden');
+    }
 
-    async function init() {
-      const savedUserId = localStorage.getItem('trev_user_id');
-      if (savedUserId) {
-        const { data: profile } = await sb.from('profiles').select('*').eq('id', savedUserId).single();
-        if (profile) {
-          currentUser = profile;
-          document.getElementById('auth-buttons').classList.add('hidden');
-          document.getElementById('user-profile').classList.remove('hidden');
-          document.getElementById('user-display-name').innerText = profile.ingame_name;
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+    }
 
-          if (profile.role === 'admin') {
-            document.getElementById('admin-nav-btn').classList.remove('hidden');
-          }
+    function toggleAuthMode() {
+      openAuthModal(!isLoginMode);
+    }
+
+    // Auth Simulation & Supabase Verbindung
+    async function handleAuth(e) {
+      e.preventDefault();
+      const ign = document.getElementById('ign-input').value.trim();
+      const pass = document.getElementById('pass-input').value.trim();
+      const discord = document.getElementById('discord-input').value.trim();
+
+      if(isLoginMode) {
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .eq('ign', ign)
+          .eq('password', pass)
+          .single();
+
+        if(error || !data) {
+          alert('Login fehlgeschlagen! Falscher Ingame-Name oder Passwort.');
+          return;
         }
+
+        if(!data.is_approved) {
+          alert('Dein Account wartet noch auf die Freigabe durch einen Administrator.');
+          return;
+        }
+
+        currentUser = data;
+        localStorage.setItem('trevenmark_user', JSON.stringify(data));
+        closeAuthModal();
+        updateUI();
+        alert('Erfolgreich eingeloggt!');
+      } else {
+        // Registrierung (ohne E-Mail, mit admin approval)
+        const { error } = await supabaseClient.from('profiles').insert([
+          { ign, discord, password: pass, role: 'player', is_approved: false }
+        ]);
+
+        if(error) {
+          alert('Fehler bei der Registrierung: ' + error.message);
+          return;
+        }
+
+        alert('Registrierung erfolgreich! Ein Administrator muss deinen Account freigeben, bevor du dich einloggen kannst.');
+        closeAuthModal();
       }
-      loadMapProperties();
-      loadTodos();
     }
 
-    async function handleRegister(e) {
-      e.preventDefault();
-      const ingame = document.getElementById('reg-ingame').value;
-      const discord = document.getElementById('reg-discord').value;
-      const password = document.getElementById('reg-pass').value;
-
-      const { error } = await sb.from('profiles').insert([{
-        ingame_name: ingame,
-        discord_name: discord,
-        password_hash: password,
-        role: 'spieler',
-        is_approved: false
-      }]);
-
-      if (error) return alert("Fehler: " + error.message);
-      alert("Erfolgreich registriert! Bitte warte, bis ein Admin deinen Account freischaltet.");
-      closeModal('register-modal');
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('trevenmark_user');
+      updateUI();
+      switchTab('map');
+      alert('Erfolgreich ausgeloggt.');
     }
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const ingame = document.getElementById('login-ingame').value;
-      const password = document.getElementById('login-pass').value;
+    function updateUI() {
+      const authSection = document.getElementById('auth-section');
+      const adminBtn = document.getElementById('admin-nav-btn');
+      const propBtn = document.getElementById('new-property-btn');
 
-      const { data, error } = await sb.from('profiles').select('*').eq('ingame_name', ingame).eq('password_hash', password).single();
-
-      if (error || !data) return alert("Falscher Ingame-Name oder Passwort!");
-      if (!data.is_approved) return alert("Dein Account wurde noch nicht von einem Admin freigeschaltet!");
-
-      localStorage.setItem('trev_user_id', data.id);
-      alert("Erfolgreich eingeloggt!");
-      location.reload();
-    }
-
-    async function logout() {
-      localStorage.removeItem('trev_user_id');
-      location.reload();
-    }
-
-    async function loadMapProperties() {
-      const { data: props } = await sb.from('properties').select('*');
-      allProperties = props || [];
-      const selector = document.getElementById('map-property-selector');
-
-      if (!props || props.length === 0) {
-        selector.innerHTML = '<p class="text-slate-500 text-xs col-span-full">Noch keine Grundstücke angelegt.</p>';
-        return;
-      }
-
-      selector.innerHTML = props.map(p => `
-        <button onclick="selectPropertyForMap(${p.id}, '${p.name}')" class="bg-slate-900 hover:bg-slate-800 p-4 rounded-xl border border-slate-800 text-left transition shadow-md group">
-          <p class="font-bold text-sky-400 group-hover:text-sky-300">🏡 ${p.name}</p>
-          <p class="text-xs text-slate-500 font-mono mt-1">📍 ${p.coordinates}</p>
-        </button>
-      `).join('');
-    }
-
-    async function selectPropertyForMap(propId, propName) {
-      const container = document.getElementById('selected-property-todos');
-      const title = document.getElementById('selected-property-title');
-      const list = document.getElementById('property-todo-list');
-
-      title.innerText = `To-Dos für Grundstück: ${propName}`;
-      container.classList.remove('hidden');
-
-      const { data: todos } = await sb.from('todos').select('*').eq('property_id', propId);
-
-      if (!todos || todos.length === 0) {
-        list.innerHTML = '<p class="text-slate-500 text-xs col-span-full">Keine To-Dos für dieses Grundstück hinterlegt.</p>';
-        return;
-      }
-
-      list.innerHTML = todos.map(t => `
-        <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 text-xs space-y-1">
-          <p class="font-bold text-white">${t.title}</p>
-          <p class="text-slate-400">${t.description || 'Keine Details'}</p>
-          <span class="inline-block px-2 py-0.5 rounded text-[10px] bg-slate-800 text-sky-400">${t.status}</span>
-        </div>
-      `).join('');
-    }
-
-    async function loadTodos() {
-      const { data: todos } = await sb.from('todos').select('*, properties(name, coordinates)');
-      const list = document.getElementById('todos-list');
-
-      if (!todos || todos.length === 0) {
-        list.innerHTML = `<p class="text-slate-500 text-sm">Aktuell keine To-Dos vorhanden.</p>`;
-        return;
-      }
-
-      if (currentUser) {
-        const myActive = todos.filter(t => t.assigned_to === currentUser.id && t.status !== 'erledigt');
-        document.getElementById('active-todo-count').innerText = myActive.length;
-      }
-
-      list.innerHTML = todos.map(t => {
-        const isAssignedToMe = currentUser && t.assigned_to === currentUser.id;
-        return `
-          <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">${t.status}</span>
-                ${t.properties ? `<span class="text-[10px] text-sky-400 font-bold">🏡 ${t.properties.name}</span>` : ''}
-              </div>
-              <h3 class="font-bold text-base text-white mb-1">${t.title}</h3>
-              <p class="text-xs text-slate-400 mb-4">${t.description || 'Keine Beschreibung'}</p>
-            </div>
-            <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
-              <span class="text-[11px] text-slate-500">Zuweisung: ${t.assigned_to ? 'Vergeben' : 'Frei'}</span>
-              ${!t.assigned_to ? `<button onclick="acceptTodo(${t.id})" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Annehmen</button>` : ''}
-              ${isAssignedToMe ? `<button onclick="finishTodo(${t.id})" class="bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Erledigen</button>` : ''}
-            </div>
+      if(currentUser) {
+        authSection.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">👤 ${currentUser.ign}</span>
+            <button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button>
           </div>
         `;
-      }).join('');
-    }
-
-    async function loadMyArea() {
-      if (!currentUser) {
-        document.getElementById('my-todos-list').innerHTML = '<p class="text-slate-500 text-sm">Bitte logge dich ein, um deine Aufgaben zu sehen.</p>';
-        return;
-      }
-
-      const { data: todos } = await sb.from('todos').select('*, properties(name, coordinates)').eq('assigned_to', currentUser.id);
-      const list = document.getElementById('my-todos-list');
-
-      const activeTodos = todos?.filter(t => t.status !== 'erledigt') || [];
-
-      if (activeTodos.length === 0) {
-        list.innerHTML = '<p class="text-slate-500 text-sm">Du hast aktuell keine aktiven To-Dos angenommen.</p>';
-        return;
-      }
-
-      list.innerHTML = activeTodos.map(t => `
-        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="font-bold text-white text-sm">${t.title}</p>
-              ${t.properties ? `<p class="text-xs text-sky-400">🏡 ${t.properties.name} (${t.properties.coordinates})</p>` : ''}
-              <p class="text-xs text-slate-400 mt-1">${t.description || 'Keine Beschreibung'}</p>
-            </div>
-            <button onclick="finishTodo(${t.id})" class="bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Erledigen</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function acceptTodo(todoId) {
-      if (!currentUser) return alert("Bitte logge dich ein!");
-      if (!currentUser.is_approved) return alert("Dein Account ist noch nicht freigeschaltet!");
-
-      // Admins haben kein Limit, normale Spieler max. 3
-      if (currentUser.role !== 'admin') {
-        const { data: myTodos } = await sb.from('todos').select('*').eq('assigned_to', currentUser.id).neq('status', 'erledigt');
-        if (myTodos && myTodos.length >= 3) {
-          return alert("Du kannst als Spieler maximal 3 aktive To-Dos gleichzeitig haben!");
+        if(currentUser.role === 'admin') {
+          adminBtn.classList.remove('hidden');
+          propBtn.classList.remove('hidden');
+          loadAdminPanel();
+        } else {
+          adminBtn.classList.add('hidden');
+          propBtn.classList.add('hidden');
         }
+        loadDashboard();
+      } else {
+        authSection.innerHTML = `
+          <button onclick="openAuthModal(true)" class="text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5">Login</button>
+          <button onclick="openAuthModal(false)" class="bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white px-4 py-2 rounded-xl transition">Registrieren</button>
+        `;
+        adminBtn.classList.add('hidden');
+        propBtn.classList.add('hidden');
       }
-
-      await sb.from('todos').update({ assigned_to: currentUser.id, status: 'in_bearbeitung' }).eq('id', todoId);
-      alert("To-Do angenommen!");
-      loadTodos();
-    }
-
-    async function finishTodo(todoId) {
-      await sb.from('todos').update({ status: 'erledigt' }).eq('id', todoId);
-      alert("To-Do als erledigt markiert!");
-      loadTodos();
-      loadMyArea();
-    }
-
-    async function loadProperties() {
-      const { data: props } = await sb.from('properties').select('*, profiles(ingame_name)');
-      const list = document.getElementById('properties-list');
-
-      if (!props || props.length === 0) {
-        list.innerHTML = `<p class="text-slate-500 text-sm">Keine Grundstücke eingetragen.</p>`;
-        return;
-      }
-
-      list.innerHTML = props.map(p => `
-        <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl space-y-2">
-          <h3 class="font-bold text-base text-white">${p.name}</h3>
-          <p class="text-xs text-sky-400 font-mono">📍 ${p.coordinates || 'Keine Koordinaten'}</p>
-          <p class="text-xs text-slate-400">Besitzer: <span class="text-white font-bold">${p.profiles?.ingame_name || 'Unvergeben (Frei)'}</span></p>
-        </div>
-      `).join('');
     }
 
     async function loadAdminPanel() {
-      if (!currentUser || currentUser.role !== 'admin') return;
+      const { data } = await supabaseClient.from('profiles').select('*').eq('is_approved', false);
+      const tbody = document.getElementById('admin-pending-users');
+      tbody.innerHTML = '';
+      if(!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Keine ausstehenden Registrierungen.</td></tr>`;
+        return;
+      }
+      data.forEach(user => {
+        tbody.innerHTML += `
+          <tr class="border-b border-slate-800/50">
+            <td class="p-3 font-semibold">${user.ign}</td>
+            <td class="p-3 text-slate-400">${user.discord}</td>
+            <td class="p-3"><span class="bg-slate-800 text-xs px-2 py-1 rounded">Spieler</span></td>
+            <td class="p-3 text-right">
+              <button onclick="approveUser('${user.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freigeben</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
 
-      const { data: pending } = await sb.from('profiles').select('*').eq('is_approved', false);
-      const pendingContainer = document.getElementById('admin-pending-users');
+    async function approveUser(id) {
+      await supabaseClient.from('profiles').update({ is_approved: true }).eq('id', id);
+      alert('Benutzer freigegeben!');
+      loadAdminPanel();
+    }
 
-      if (pending && pending.length > 0) {
-        pendingContainer.innerHTML = pending.map(u => `
-          <div class="bg-slate-950 p-3 rounded-xl flex justify-between items-center text-sm border border-slate-800">
-            <div>
-              <p class="font-bold text-white">${u.ingame_name} <span class="text-xs text-slate-400">(${u.discord_name})</span></p>
-            </div>
-            <button onclick="approveUser('${u.id}')" class="bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freischalten</button>
-          </div>
-        `).join('');
+    async function loadDashboard() {
+      if(!currentUser) return;
+      // To-Dos laden
+      const { data: todos } = await supabaseClient.from('todos').select('*').eq('assigned_to', currentUser.ign);
+      const todoList = document.getElementById('my-todos-list');
+      const activeCount = document.getElementById('my-active-count');
+      todoList.innerHTML = '';
+      let count = 0;
+      if(todos && todos.length > 0) {
+        todos.forEach(t => {
+          if(t.status !== 'completed') count++;
+          todoList.innerHTML += `<div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs"><span>${t.title}</span><span class="text-indigo-400">${t.status}</span></div>`;
+        });
       } else {
-        pendingContainer.innerHTML = '<p class="text-slate-500 text-sm">Keine ausstehenden Registrierungen.</p>';
+        todoList.innerHTML = `<p class="text-slate-500 text-xs">Keine Aufgaben zugewiesen.</p>`;
       }
+      activeCount.innerText = count;
+    }
 
-      // Dropdown für Grundstücke beim To-Do Erstellen füllen
-      const { data: props } = await sb.from('properties').select('*');
-      const propSelect = document.getElementById('new-todo-property');
-      if (props && props.length > 0) {
-        propSelect.innerHTML = '<option value="">Kein Grundstück zugewiesen</option>' + props.map(p => `<option value="${p.id}">${p.name} (${p.coordinates})</option>`).join('');
+    // Init beim Start
+    window.onload = () => {
+      const savedUser = localStorage.getItem('trevenmark_user');
+      if(savedUser) {
+        currentUser = JSON.parse(savedUser);
       }
-    }
-
-    async function approveUser(userId) {
-      await sb.from('profiles').update({ is_approved: true }).eq('id', userId);
-      alert("Account freigeschaltet!");
-      loadAdminPanel();
-    }
-
-    async function adminCreateTodo(e) {
-      e.preventDefault();
-      const title = document.getElementById('new-todo-title').value;
-      const description = document.getElementById('new-todo-desc').value;
-      const propertyId = document.getElementById('new-todo-property').value || null;
-
-      await sb.from('todos').insert([{ title, description, property_id: propertyId, status: 'offen' }]);
-      alert("To-Do erfolgreich erstellt!");
-      document.getElementById('new-todo-title').value = '';
-      document.getElementById('new-todo-desc').value = '';
-      loadTodos();
-    }
-
-    async function adminCreateProperty(e) {
-      e.preventDefault();
-      const name = document.getElementById('new-prop-name').value;
-      const coordinates = document.getElementById('new-prop-coords').value;
-
-      await sb.from('properties').insert([{ name, coordinates }]);
-      alert("Grundstück erfolgreich angelegt!");
-      document.getElementById('new-prop-name').value = '';
-      document.getElementById('new-prop-coords').value = '';
-      loadProperties();
-      loadMapProperties();
-      loadAdminPanel();
-    }
-
-    init();
+      updateUI();
+    };
   </script>
 </body>
 </html>
