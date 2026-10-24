@@ -198,7 +198,7 @@
       const discord = document.getElementById('discord-input').value.trim();
 
       if(isLoginMode) {
-        const { data, error } = await supabaseClient.from('profiles').select('*').eq('ingame_name', ign).eq('password', pass).maybeSingle();
+        const { data, error } = await supabaseClient.from('profiles').select('*').eq('ingame_name', ign).eq('password_hash', pass).maybeSingle();
         if(error) { alert('Datenbank-Fehler: ' + error.message); return; }
         if(!data) { alert('Login fehlgeschlagen: Account nicht gefunden oder Passwort falsch!'); return; }
         if(!data.is_approved) { alert('Dein Account wartet noch auf Admin-Freigabe.'); return; }
@@ -207,7 +207,7 @@
         closeAuthModal();
         updateUI();
       } else {
-        const { error } = await supabaseClient.from('profiles').insert([{ ingame_name: ign, discord, password: pass, role: 'player', is_approved: false }]);
+        const { error } = await supabaseClient.from('profiles').insert([{ ingame_name: ign, discord, password_hash: pass, role: 'player', is_approved: false }]);
         if(error) { alert('Fehler: ' + error.message); return; }
         alert('Registrierung erfolgreich! Wartet auf Admin-Freigabe.');
         closeAuthModal();
