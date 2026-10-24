@@ -198,9 +198,10 @@
       const discord = document.getElementById('discord-input').value.trim();
 
       if(isLoginMode) {
-        const { data, error } = await supabaseClient.from('profiles').select('*').eq('ign', ign).eq('password', pass).single();
-        if(error || !data) { alert('Login fehlgeschlagen!'); return; }
-        if(!data.is_approved) { alert('Dein Account wartet noch auf Freigabe.'); return; }
+        const { data, error } = await supabaseClient.from('profiles').select('*').eq('ign', ign).eq('password', pass).maybeSingle();
+        if(error) { alert('Datenbank-Fehler: ' + error.message); return; }
+        if(!data) { alert('Login fehlgeschlagen: Account nicht gefunden oder Passwort falsch!'); return; }
+        if(!data.is_approved) { alert('Dein Account wartet noch auf Admin-Freigabe.'); return; }
         currentUser = data;
         localStorage.setItem('trevenmark_user', JSON.stringify(data));
         closeAuthModal();
