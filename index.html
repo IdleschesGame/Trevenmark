@@ -38,7 +38,7 @@
         <button id="admin-nav-btn" onclick="switchTab('admin')" class="nav-btn text-amber-400 hover:text-amber-300 transition hidden" data-target="page-admin">⚡ Admin-Panel</button>
       </nav>
       <div id="auth-section" class="flex items-center gap-3">
-        <!-- Wird dynamisch gefüllt (Login/Register oder User-Info) -->
+        <!-- Wird dynamisch gefüllt -->
       </div>
     </div>
   </header>
@@ -52,7 +52,7 @@
         <div class="flex justify-between items-center mb-4">
           <div>
             <h2 class="text-2xl font-black">🗺️ Trevenmark Live 3D-Karte</h2>
-            <p class="text-slate-400 text-xs mt-1">Interaktive 3D-Kartenansicht powered by BlueMap. Klicke unten auf ein Grundstück, um To-Dos anzuzeigen!</p>
+            <p class="text-slate-400 text-xs mt-1">Interaktive 3D-Kartenansicht powered by BlueMap. Falls eine Warnung erscheint, einmal auf "Visit Site" klicken.</p>
           </div>
           <a href="https://diary-crispness-bagpipe.ngrok-free.dev" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center gap-1">
             ↗️ In neuem Tab öffnen
@@ -62,19 +62,6 @@
         <!-- BlueMap Live Embed -->
         <div class="w-full h-[600px] rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative bg-slate-950">
           <iframe id="bluemap-frame" src="https://diary-crispness-bagpipe.ngrok-free.dev" class="w-full h-full border-0"></iframe>
-        </div>
-
-        <!-- Grundstücks-Auswahl für To-Dos -->
-        <div class="mt-6">
-          <h3 class="font-bold text-sm text-slate-300 mb-3">🏡 Eingezeichnete Grundstücke & Stadtzonen:</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="map-property-selector">
-            <!-- Grundstücke werden hier dynamisch geladen -->
-          </div>
-        </div>
-
-        <div id="selected-property-todos" class="bg-slate-950 p-4 rounded-xl border border-sky-500/30 hidden mt-4">
-          <h3 class="font-bold text-sky-400 text-sm mb-2" id="selected-property-title">To-Dos für dieses Grundstück</h3>
-          <div id="property-todo-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
         </div>
       </div>
     </section>
@@ -90,9 +77,7 @@
           + Grundstück hinzufügen
         </button>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="properties-grid">
-        <!-- Grundstücke-Karten -->
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="properties-grid"></div>
     </section>
 
     <!-- PAGE 3: AUFGABEN (TODOS) -->
@@ -106,29 +91,23 @@
           + Aufgabe erstellen
         </button>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="todos-grid">
-        <!-- Aufgaben-Karten -->
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="todos-grid"></div>
     </section>
 
     <!-- PAGE 4: MEIN BEREICH (DASHBOARD) -->
     <section id="page-dashboard" class="page-content space-y-6 hidden">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <h2 class="text-2xl font-black mb-2">👤 Mein Bereich</h2>
-        <p class="text-slate-400 text-xs mb-6">Deine persönlichen Statistiken und aktiven Aufgaben in Trevenmark.</p>
+        <p class="text-slate-400 text-xs mb-6">Deine persönlichen Statistiken und aktiven Aufgaben.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
             <h3 class="font-bold text-sm text-indigo-400 mb-3">📋 Meine aktiven To-Dos (<span id="my-active-count">0</span> / 3)</h3>
-            <div id="my-todos-list" class="space-y-3">
-              <!-- Dynamisch -->
-            </div>
+            <div id="my-todos-list" class="space-y-3"></div>
           </div>
           <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
             <h3 class="font-bold text-sm text-sky-400 mb-3">🏡 Meine Grundstücke</h3>
-            <div id="my-properties-list" class="space-y-3">
-              <!-- Dynamisch -->
-            </div>
+            <div id="my-properties-list" class="space-y-3"></div>
           </div>
         </div>
       </div>
@@ -138,7 +117,7 @@
     <section id="page-admin" class="page-content space-y-6 hidden">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <h2 class="text-2xl font-black text-amber-400 mb-2">⚡ Admin-Verwaltung</h2>
-        <p class="text-slate-400 text-xs mb-6">Freigabe neuer Spieler und Benutzer-Management.</p>
+        <p class="text-slate-400 text-xs mb-6">Freigabe neuer Spieler.</p>
         
         <h3 class="font-bold text-sm text-slate-300 mb-3">Ausstehende Registrierungen:</h3>
         <div class="overflow-x-auto">
@@ -151,9 +130,7 @@
                 <th class="p-3 rounded-r-lg text-right">Aktion</th>
               </tr>
             </thead>
-            <tbody id="admin-pending-users">
-              <!-- Dynamisch -->
-            </tbody>
+            <tbody id="admin-pending-users"></tbody>
           </table>
         </div>
       </div>
@@ -161,7 +138,7 @@
 
   </main>
 
-  <!-- AUTH MODAL (LOGIN / REGISTER) -->
+  <!-- AUTH MODAL -->
   <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-md p-6 rounded-2xl shadow-2xl relative">
       <h3 id="auth-modal-title" class="text-xl font-bold mb-4">Registrierung</h3>
@@ -187,7 +164,6 @@
     </div>
   </div>
 
-  <!-- SCRIPT LOGIK -->
   <script>
     const SUPABASE_URL = "https://lbskjucfzrodjhbpraac.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_CMsxSeOj_19-r3MAQo6r7g_zsrsgTQO";
@@ -196,11 +172,9 @@
     let currentUser = null;
     let isLoginMode = false;
 
-    // Tabs umschalten
     function switchTab(tabId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('page-' + tabId).classList.remove('hidden');
-      
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-indigo-400', 'text-amber-400'));
       const activeBtn = document.querySelector(`[data-target="page-${tabId}"]`);
       if(activeBtn) activeBtn.classList.add(tabId === 'admin' ? 'text-amber-400' : 'text-indigo-400');
@@ -214,15 +188,9 @@
       document.getElementById('auth-modal').classList.remove('hidden');
     }
 
-    function closeAuthModal() {
-      document.getElementById('auth-modal').classList.add('hidden');
-    }
+    function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+    function toggleAuthMode() { openAuthModal(!isLoginMode); }
 
-    function toggleAuthMode() {
-      openAuthModal(!isLoginMode);
-    }
-
-    // Auth Simulation & Supabase Verbindung
     async function handleAuth(e) {
       e.preventDefault();
       const ign = document.getElementById('ign-input').value.trim();
@@ -230,40 +198,17 @@
       const discord = document.getElementById('discord-input').value.trim();
 
       if(isLoginMode) {
-        const { data, error } = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .eq('ign', ign)
-          .eq('password', pass)
-          .single();
-
-        if(error || !data) {
-          alert('Login fehlgeschlagen! Falscher Ingame-Name oder Passwort.');
-          return;
-        }
-
-        if(!data.is_approved) {
-          alert('Dein Account wartet noch auf die Freigabe durch einen Administrator.');
-          return;
-        }
-
+        const { data, error } = await supabaseClient.from('profiles').select('*').eq('ign', ign).eq('password', pass).single();
+        if(error || !data) { alert('Login fehlgeschlagen!'); return; }
+        if(!data.is_approved) { alert('Dein Account wartet noch auf Freigabe.'); return; }
         currentUser = data;
         localStorage.setItem('trevenmark_user', JSON.stringify(data));
         closeAuthModal();
         updateUI();
-        alert('Erfolgreich eingeloggt!');
       } else {
-        // Registrierung (ohne E-Mail, mit admin approval)
-        const { error } = await supabaseClient.from('profiles').insert([
-          { ign, discord, password: pass, role: 'player', is_approved: false }
-        ]);
-
-        if(error) {
-          alert('Fehler bei der Registrierung: ' + error.message);
-          return;
-        }
-
-        alert('Registrierung erfolgreich! Ein Administrator muss deinen Account freigeben, bevor du dich einloggen kannst.');
+        const { error } = await supabaseClient.from('profiles').insert([{ ign, discord, password: pass, role: 'player', is_approved: false }]);
+        if(error) { alert('Fehler: ' + error.message); return; }
+        alert('Registrierung erfolgreich! Wartet auf Admin-Freigabe.');
         closeAuthModal();
       }
     }
@@ -273,7 +218,6 @@
       localStorage.removeItem('trevenmark_user');
       updateUI();
       switchTab('map');
-      alert('Erfolgreich ausgeloggt.');
     }
 
     function updateUI() {
@@ -282,28 +226,13 @@
       const propBtn = document.getElementById('new-property-btn');
 
       if(currentUser) {
-        authSection.innerHTML = `
-          <div class="flex items-center gap-3">
-            <span class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">👤 ${currentUser.ign}</span>
-            <button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button>
-          </div>
-        `;
-        if(currentUser.role === 'admin') {
-          adminBtn.classList.remove('hidden');
-          propBtn.classList.remove('hidden');
-          loadAdminPanel();
-        } else {
-          adminBtn.classList.add('hidden');
-          propBtn.classList.add('hidden');
-        }
+        authSection.innerHTML = `<div class="flex items-center gap-3"><span class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">👤 ${currentUser.ign}</span><button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button></div>`;
+        if(currentUser.role === 'admin') { adminBtn.classList.remove('hidden'); propBtn.classList.remove('hidden'); loadAdminPanel(); }
+        else { adminBtn.classList.add('hidden'); propBtn.classList.add('hidden'); }
         loadDashboard();
       } else {
-        authSection.innerHTML = `
-          <button onclick="openAuthModal(true)" class="text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5">Login</button>
-          <button onclick="openAuthModal(false)" class="bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white px-4 py-2 rounded-xl transition">Registrieren</button>
-        `;
-        adminBtn.classList.add('hidden');
-        propBtn.classList.add('hidden');
+        authSection.innerHTML = `<button onclick="openAuthModal(true)" class="text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5">Login</button><button onclick="openAuthModal(false)" class="bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white px-4 py-2 rounded-xl transition">Registrieren</button>`;
+        adminBtn.classList.add('hidden'); propBtn.classList.add('hidden');
       }
     }
 
@@ -311,33 +240,19 @@
       const { data } = await supabaseClient.from('profiles').select('*').eq('is_approved', false);
       const tbody = document.getElementById('admin-pending-users');
       tbody.innerHTML = '';
-      if(!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Keine ausstehenden Registrierungen.</td></tr>`;
-        return;
-      }
+      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Keine ausstehenden Registrierungen.</td></tr>`; return; }
       data.forEach(user => {
-        tbody.innerHTML += `
-          <tr class="border-b border-slate-800/50">
-            <td class="p-3 font-semibold">${user.ign}</td>
-            <td class="p-3 text-slate-400">${user.discord}</td>
-            <td class="p-3"><span class="bg-slate-800 text-xs px-2 py-1 rounded">Spieler</span></td>
-            <td class="p-3 text-right">
-              <button onclick="approveUser('${user.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freigeben</button>
-            </td>
-          </tr>
-        `;
+        tbody.innerHTML += `<tr class="border-b border-slate-800/50"><td class="p-3 font-semibold">${user.ign}</td><td class="p-3 text-slate-400">${user.discord}</td><td class="p-3"><span class="bg-slate-800 text-xs px-2 py-1 rounded">Spieler</span></td><td class="p-3 text-right"><button onclick="approveUser('${user.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freigeben</button></td></tr>`;
       });
     }
 
     async function approveUser(id) {
       await supabaseClient.from('profiles').update({ is_approved: true }).eq('id', id);
-      alert('Benutzer freigegeben!');
       loadAdminPanel();
     }
 
     async function loadDashboard() {
       if(!currentUser) return;
-      // To-Dos laden
       const { data: todos } = await supabaseClient.from('todos').select('*').eq('assigned_to', currentUser.ign);
       const todoList = document.getElementById('my-todos-list');
       const activeCount = document.getElementById('my-active-count');
@@ -349,17 +264,14 @@
           todoList.innerHTML += `<div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs"><span>${t.title}</span><span class="text-indigo-400">${t.status}</span></div>`;
         });
       } else {
-        todoList.innerHTML = `<p class="text-slate-500 text-xs">Keine Aufgaben zugewiesen.</p>`;
+        todoList.innerHTML = `<p class="text-slate-500 text-xs">Keine Aufgaben.</p>`;
       }
       activeCount.innerText = count;
     }
 
-    // Init beim Start
     window.onload = () => {
       const savedUser = localStorage.getItem('trevenmark_user');
-      if(savedUser) {
-        currentUser = JSON.parse(savedUser);
-      }
+      if(savedUser) currentUser = JSON.parse(savedUser);
       updateUI();
     };
   </script>
