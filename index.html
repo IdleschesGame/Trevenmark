@@ -198,7 +198,7 @@
       const discord = document.getElementById('discord-input').value.trim();
 
       if(isLoginMode) {
-        const { data, error } = await supabaseClient.from('profiles').select('*').eq('ign', ign).eq('password', pass).maybeSingle();
+        const { data, error } = await supabaseClient.from('profiles').select('*').eq('ingame_name', ign).eq('password', pass).maybeSingle();
         if(error) { alert('Datenbank-Fehler: ' + error.message); return; }
         if(!data) { alert('Login fehlgeschlagen: Account nicht gefunden oder Passwort falsch!'); return; }
         if(!data.is_approved) { alert('Dein Account wartet noch auf Admin-Freigabe.'); return; }
@@ -207,7 +207,7 @@
         closeAuthModal();
         updateUI();
       } else {
-        const { error } = await supabaseClient.from('profiles').insert([{ ign, discord, password: pass, role: 'player', is_approved: false }]);
+        const { error } = await supabaseClient.from('profiles').insert([{ ingame_name: ign, discord, password: pass, role: 'player', is_approved: false }]);
         if(error) { alert('Fehler: ' + error.message); return; }
         alert('Registrierung erfolgreich! Wartet auf Admin-Freigabe.');
         closeAuthModal();
@@ -227,7 +227,7 @@
       const propBtn = document.getElementById('new-property-btn');
 
       if(currentUser) {
-        authSection.innerHTML = `<div class="flex items-center gap-3"><span class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">👤 ${currentUser.ign}</span><button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button></div>`;
+        authSection.innerHTML = `<div class="flex items-center gap-3"><span class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">👤 ${currentUser.ingame_name}</span><button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button></div>`;
         if(currentUser.role === 'admin') { adminBtn.classList.remove('hidden'); propBtn.classList.remove('hidden'); loadAdminPanel(); }
         else { adminBtn.classList.add('hidden'); propBtn.classList.add('hidden'); }
         loadDashboard();
@@ -243,7 +243,7 @@
       tbody.innerHTML = '';
       if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Keine ausstehenden Registrierungen.</td></tr>`; return; }
       data.forEach(user => {
-        tbody.innerHTML += `<tr class="border-b border-slate-800/50"><td class="p-3 font-semibold">${user.ign}</td><td class="p-3 text-slate-400">${user.discord}</td><td class="p-3"><span class="bg-slate-800 text-xs px-2 py-1 rounded">Spieler</span></td><td class="p-3 text-right"><button onclick="approveUser('${user.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freigeben</button></td></tr>`;
+        tbody.innerHTML += `<tr class="border-b border-slate-800/50"><td class="p-3 font-semibold">${user.ingame_name}</td><td class="p-3 text-slate-400">${user.discord}</td><td class="p-3"><span class="bg-slate-800 text-xs px-2 py-1 rounded">Spieler</span></td><td class="p-3 text-right"><button onclick="approveUser('${user.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freigeben</button></td></tr>`;
       });
     }
 
@@ -254,7 +254,7 @@
 
     async function loadDashboard() {
       if(!currentUser) return;
-      const { data: todos } = await supabaseClient.from('todos').select('*').eq('assigned_to', currentUser.ign);
+      const { data: todos } = await supabaseClient.from('todos').select('*').eq('assigned_to', currentUser.ingame_name);
       const todoList = document.getElementById('my-todos-list');
       const activeCount = document.getElementById('my-active-count');
       todoList.innerHTML = '';
