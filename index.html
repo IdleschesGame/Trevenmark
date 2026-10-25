@@ -169,36 +169,49 @@
     const SUPABASE_ANON_KEY = "sb_publishable_CMsxSeOj_19-r3MAQo6r7g_zsrsgTQO";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // KARTEN-STEUERUNG (LIVE VS OFFLINE)
+    // KARTEN-STEUERUNG (LIVE NGKOK VS OFFLINE STATIC)
     const LIVE_NGROK_URL = "https://diary-crispness-bagpipe.ngrok-free.dev";
-    
-    // HIER GEÄNDERT: Verweist nun fehlerfrei auf die map.html direkt im Root!
     const OFFLINE_STATIC_URL = "./map.html";
 
     let currentUser = null;
     let isLoginMode = false;
 
-
-
-
-// AUTOMATISCHE KARTEN-ERKENNUNG
+    // AUTOMATISCHE HYBRID-KARTEN-ERKENNUNG
     async function initAutomaticMap() {
       const frame = document.getElementById('bluemap-frame');
       const statusText = document.getElementById('map-status-text');
       const extLink = document.getElementById('external-map-link');
 
-      statusText.innerText = "Lade statische Karte...";
+      statusText.innerText = "Prüfe ngrok-Verbindung...";
 
-      // Wir laden im Hybrid-Modus direkt die lokale map.html, 
-      // da der ngrok-Test wegen CORS/Netzwerk oft fehlschlägt.
-      frame.src = OFFLINE_STATIC_URL;
-      extLink.href = OFFLINE_STATIC_URL;
-      statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Static Mode</span> – Lädt fehlerfrei aus dem Root";
+      let targetUrl = OFFLINE_STATIC_URL;
+      let isLive = false;
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 Sek. Timeout
+
+        await fetch(LIVE_NGROK_URL, { 
+          mode: 'no-cors', 
+          signal: controller.signal 
+        });
+        clearTimeout(timeoutId);
+        
+        targetUrl = LIVE_NGROK_URL;
+        isLive = true;
+      } catch (e) {
+        isLive = false;
+      }
+
+      frame.src = targetUrl;
+      extLink.href = targetUrl;
+
+      if (isLive) {
+        statusText.innerHTML = "🟢 <span class='text-emerald-400 font-bold'>Live ngrok Mode</span> – Verbunden mit deinem PC (Port 8100)";
+      } else {
+        statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Static Mode</span> – ngrok ist aus, läuft stabil über Root";
+      }
     }
-
-
-
-
 
     function switchTab(tabId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
