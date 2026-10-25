@@ -171,8 +171,8 @@
 
     // KARTEN-STEUERUNG (LIVE VS OFFLINE)
     const LIVE_NGROK_URL = "https://diary-crispness-bagpipe.ngrok-free.dev";
-    // Direkte Verlinkung auf den Unterordner mit Slash
-    const OFFLINE_STATIC_URL = "./map-static/";
+    // Zeigt direkt auf die index.html im Backup-Ordner
+    const OFFLINE_STATIC_URL = "./map-static/index.html";
 
     let currentUser = null;
     let isLoginMode = false;
@@ -189,7 +189,6 @@
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2500);
 
-        // Wir prüfen settings.json von ngrok
         const checkUrl = LIVE_NGROK_URL + "/settings.json";
         const response = await fetch(checkUrl, { method: 'GET', signal: controller.signal });
         clearTimeout(timeoutId);
@@ -204,7 +203,7 @@
           throw new Error("ngrok offline oder Error-Seite");
         }
       } catch (err) {
-        // OFFLINE MODE -> Lade statischen Ordner
+        // OFFLINE MODE -> Lade statische index.html
         frame.src = OFFLINE_STATIC_URL;
         extLink.href = OFFLINE_STATIC_URL;
         statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Offline Mode</span> – Zeigt den letzten Stand der Welt (Vercel Backup)";
