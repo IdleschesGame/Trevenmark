@@ -50,9 +50,13 @@
     <section id="page-map" class="page-content space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <div class="flex justify-between items-center mb-4">
-          <div>
+          <div class="flex items-center gap-3">
             <h2 class="text-2xl font-black">🗺️ Trevenmark Live 3D-Karte</h2>
-            <p id="map-status-text" class="text-xs mt-1 text-slate-400">Verbindung wird geprüft...</p>
+            <!-- Hier sitzt nun der dynamische Punkt (Grün / Rot) -->
+            <div id="map-status-badge" class="flex items-center gap-1.5 bg-slate-950 px-3 py-1 rounded-full border border-slate-800 text-xs font-semibold">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-500 animate-pulse"></span>
+              <span id="map-status-text" class="text-slate-400">Prüfe...</span>
+            </div>
           </div>
           <a id="external-map-link" href="#" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center gap-1">
             ↗️ In neuem Tab öffnen
@@ -169,20 +173,18 @@
     const SUPABASE_ANON_KEY = "sb_publishable_CMsxSeOj_19-r3MAQo6r7g_zsrsgTQO";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // KARTEN-STEUERUNG (LIVE NGKOK VS OFFLINE STATIC)
+    // KARTEN-STEUERUNG (LIVE NGROK VS OFFLINE STATIC)
     const LIVE_NGROK_URL = "https://diary-crispness-bagpipe.ngrok-free.dev";
     const OFFLINE_STATIC_URL = "./map.html";
 
     let currentUser = null;
     let isLoginMode = false;
 
-    // AUTOMATISCHE HYBRID-KARTEN-ERKENNUNG
+    // AUTOMATISCHE HYBRID-KARTEN-ERKENNUNG MIT LED-STATUS
     async function initAutomaticMap() {
       const frame = document.getElementById('bluemap-frame');
-      const statusText = document.getElementById('map-status-text');
+      const statusBadge = document.getElementById('map-status-badge');
       const extLink = document.getElementById('external-map-link');
-
-      statusText.innerText = "Prüfe ngrok-Verbindung...";
 
       let targetUrl = OFFLINE_STATIC_URL;
       let isLive = false;
@@ -206,10 +208,17 @@
       frame.src = targetUrl;
       extLink.href = targetUrl;
 
+      // Dynamischen Punkt (Grün / Rot) aktualisieren
       if (isLive) {
-        statusText.innerHTML = "🟢 <span class='text-emerald-400 font-bold'>Live ngrok Mode</span> – Verbunden mit deinem PC (Port 8100)";
+        statusBadge.innerHTML = `
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.7)]"></span>
+          <span class="text-emerald-400 font-bold">Live</span>
+        `;
       } else {
-        statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Static Mode</span> – ngrok ist aus, läuft stabil über Root";
+        statusBadge.innerHTML = `
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+          <span class="text-rose-400 font-bold">Offline</span>
+        `;
       }
     }
 
