@@ -9,7 +9,7 @@
         <link rel="manifest" href="./assets/manifest-vz4Wm4Dd.webmanifest">
         <title>BlueMap</title>
 
-        <!-- Universeller Intercept für fetch UND XMLHttpRequest, um textures.json fehlerfrei abzufangen -->
+        <!-- Perfekter Intercept für fetch und XHR mit echtem JavaScript-Objekt für textures.json -->
         <script>
           // 1. Fetch Intercept
           const origFetch = window.fetch;
@@ -36,7 +36,7 @@
             return origFetch.call(this, resource, init);
           };
 
-          // 2. XMLHttpRequest (XHR) Intercept für BlueMap-Anfragen
+          // 2. XMLHttpRequest (XHR) Intercept mit echtem Objekt-Response
           const origOpen = XMLHttpRequest.prototype.open;
           XMLHttpRequest.prototype.open = function(method, url) {
             if (typeof url === 'string' && url.indexOf('textures.json') !== -1) {
@@ -49,9 +49,11 @@
           XMLHttpRequest.prototype.send = function() {
             if (this._isInterceptedTextures) {
               Object.defineProperty(this, 'status', { value: 200, writable: true });
+              Object.defineProperty(this, 'statusText', { value: 'OK', writable: true });
               Object.defineProperty(this, 'readyState', { value: 4, writable: true });
               Object.defineProperty(this, 'responseText', { value: JSON.stringify({ textures: [] }), writable: true });
-              Object.defineProperty(this, 'response', { value: JSON.stringify({ textures: [] }), writable: true });
+              // Hier übergeben wir ein echtes JavaScript-Objekt statt eines Strings:
+              Object.defineProperty(this, 'response', { value: { textures: [] }, writable: true });
               
               if (typeof this.onload === 'function') {
                 this.onload();
