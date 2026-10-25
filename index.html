@@ -184,31 +184,14 @@
       const statusText = document.getElementById('map-status-text');
       const extLink = document.getElementById('external-map-link');
 
-      statusText.innerText = "Prüfe Server-Status...";
+      statusText.innerText = "Lade statische Karte...";
 
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
-
-        const checkUrl = LIVE_NGROK_URL + "/settings.json";
-        const response = await fetch(checkUrl, { method: 'GET', signal: controller.signal });
-        clearTimeout(timeoutId);
-
-        const contentType = response.headers.get("content-type");
-
-        if (response.ok && contentType && contentType.includes("application/json")) {
-          frame.src = LIVE_NGROK_URL;
-          extLink.href = LIVE_NGROK_URL;
-          statusText.innerHTML = "🟢 <span class='text-emerald-400 font-bold'>Live Mode</span> – Server ist online (Live-Updates aktiv)";
-        } else {
-          throw new Error("ngrok offline oder Error-Seite");
-        }
-      } catch (err) {
-        // OFFLINE MODE -> Lade statische map.html aus dem Root
-        frame.src = OFFLINE_STATIC_URL;
-        extLink.href = OFFLINE_STATIC_URL;
-        statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Offline Mode</span> – Zeigt den letzten Stand der Welt (Vercel Backup)";
-      }
+      // Wir laden im Hybrid-Modus direkt die lokale map.html, 
+      // da der ngrok-Test wegen CORS/Netzwerk oft fehlschlägt.
+      frame.src = OFFLINE_STATIC_URL;
+      extLink.href = OFFLINE_STATIC_URL;
+      statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Static Mode</span> – Lädt fehlerfrei aus dem Root";
+    }
     }
 
     function switchTab(tabId) {
