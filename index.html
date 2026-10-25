@@ -171,12 +171,12 @@
 
     // KARTEN-STEUERUNG (LIVE VS OFFLINE)
     const LIVE_NGROK_URL = "https://diary-crispness-bagpipe.ngrok-free.dev";
-    const OFFLINE_STATIC_URL = "/map-static/index.html"; // Pfad zum statischen Stand in deinem Projekt
+    const OFFLINE_STATIC_URL = "./map-static/index.html"; // Pfad zum statischen Stand in deinem Projekt
 
     let currentUser = null;
     let isLoginMode = false;
 
-    // AUTOMATISCHE KARTEN-ERKENNUNG
+    // AUTOMATISCHE KARTEN-ERKENNUNG MIT OPTIMIERTEM NGROK-CHECK
     async function initAutomaticMap() {
       const frame = document.getElementById('bluemap-frame');
       const statusText = document.getElementById('map-status-text');
@@ -185,22 +185,30 @@
       statusText.innerText = "Prüfe Server-Status...";
 
       try {
-        // Prüft mit 2.5s Timeout, ob ngrok online ist
+        // Wir fragen gezielt die settings.json von BlueMap mit 3.0s Timeout ab,
+        // um ngrok-Fehlerseiten (ERR_NGROK_3200) zu entlarven.
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-        await fetch(LIVE_NGROK_URL, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+        const checkUrl = LIVE_NGROK_URL + "/settings.json";
+        const response = await fetch(checkUrl, { method: 'GET', signal: controller.signal });
         clearTimeout(timeoutId);
 
-        // NGROK ONLINE -> LIVE-MODUS
-        frame.src = LIVE_NGROK_URL;
-        extLink.href = LIVE_NGROK_URL;
-        statusText.innerHTML = "🟢 <span class='text-emerald-400 font-bold'>Live Mode</span> – Server ist online (Live-Updates aktiv)";
+        const contentType = response.headers.get("content-type");
+
+        // Nur wenn BlueMap echte JSON-Daten zurückgibt, ist der Server wirklich LIVE
+        if (response.ok && contentType && contentType.includes("application/json")) {
+          frame.src = LIVE_NGROK_URL;
+          extLink.href = LIVE_NGROK_URL;
+          statusText.innerHTML = "🟢 <span class='text-emerald-400 font-bold'>Live Mode</span> – Server ist online (Live-Updates aktiv)";
+        } else {
+          throw new Error("ngrok ist offline oder liefert Fehlerseite");
+        }
       } catch (err) {
-        // NGROK OFFLINE -> SCHALTE AUF DIESEN STATISCHEN STAND UM
+        // NGROK OFFLINE -> SCHALTE AUF STATISCHEN STAND UM
         frame.src = OFFLINE_STATIC_URL;
         extLink.href = OFFLINE_STATIC_URL;
-        statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Offline Mode</span> – Zeigt den letzten Stand der Welt";
+        statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Offline Mode</span> – Zeigt den letzten Stand der Welt (Vercel Backup)";
       }
     }
 
@@ -306,7 +314,7 @@
       const savedUser = localStorage.getItem('trevenmark_user');
       if(savedUser) currentUser = JSON.parse(savedUser);
       updateUI();
-      initAutomaticMap(); // Startet den Auto-Check!
+      initAutomaticMap(); // Startet den präzisen Auto-Check!
     };
   </script>
 </body>
