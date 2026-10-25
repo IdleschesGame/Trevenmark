@@ -3,49 +3,55 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-        <meta name="description"
-              content="BlueMap is a tool that generates 3D maps of your Minecraft worlds and displays them in your browser">
+        <meta name="description" content="BlueMap Offline Backup">
         <meta name="version" content="5.16">
-        <meta name="keywords" content="bluemap, map, minecraft, minecraft map">
-        <meta name="theme-color" content="#006EDE">
-        <meta name="og:site_name" content="BlueMap">
-        <meta name="og:title" content="BlueMap">
-        <meta name="og:description"
-              content="BlueMap is a tool that generates 3D maps of your Minecraft worlds and displays them in your browser">
-        <meta name="og:type" content="website">
-        <meta name="og:image" content="https://avatars.githubusercontent.com/u/42522657?s=200&v=4">
-        <meta name="robots" content="index,nofollow">
+        <title>BlueMap - Offline</title>
+        
         <link rel="icon" href="./assets/favicon-DEN7TZ5X.png">
         <link rel="manifest" href="./assets/manifest-vz4Wm4Dd.webmanifest">
-        <title>BlueMap</title>
-        
-        <!-- Fix für Unterordner-Hosting auf Vercel -->
+
+        <!-- 100% Browser-Side Path Fix: Zwingt BlueMap dazu, alle Daten lokal im Ordner zu suchen -->
         <script>
-          const originalFetch = window.fetch;
-          window.fetch = async function(resource, init) {
-            let url = resource instanceof Request ? resource.url : resource;
-            if (typeof url === 'string' && url.startsWith('/') && !url.startsWith('/map-static/')) {
-              if (url.includes('settings.json') || url.includes('textures.json') || url.includes('maps/') || url.includes('lang/')) {
-                const newUrl = '/map-static' + url;
-                if (resource instanceof Request) {
-                  resource = new Request(newUrl, resource);
-                } else {
-                  resource = newUrl;
-                }
+          (function() {
+            const fixPath = (url) => {
+              if (typeof url === 'string') {
+                // Wenn BlueMap nach Root-Pfaden fragt, auf den lokalen Ordner umleiten
+                if (url === '/settings.json' || url === 'settings.json') return './settings.json';
+                if (url === '/textures.json' || url === 'textures.json') return './textures.json';
+                if (url.startsWith('/maps/')) return '.' + url;
+                if (url.startsWith('/assets/')) return '.' + url;
+                if (url.startsWith('/lang/')) return '.' + url;
               }
-            }
-            return originalFetch(resource, init);
-          };
+              return url;
+            };
+
+            // Fetch überschreiben
+            const origFetch = window.fetch;
+            window.fetch = function(resource, init) {
+              if (resource instanceof Request) {
+                const newUrl = fixPath(resource.url);
+                if (newUrl !== resource.url) {
+                  resource = new Request(newUrl, init);
+                }
+              } else {
+                resource = fixPath(resource);
+              }
+              return origFetch.call(this, resource, init);
+            };
+
+            // XMLHttpRequest (XHR) überschreiben
+            const origOpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+              arguments[1] = fixPath(url);
+              return origOpen.apply(this, arguments);
+            };
+          })();
         </script>
 
         <script type="module" crossorigin src="./assets/index-Pvo3QD2A.js"></script>
         <link rel="stylesheet" crossorigin href="./assets/index-BgiqB2rB.css">
     </head>
     <body>
-        <noscript>
-            <strong>Sorry but BlueMap doesn't work without JavaScript enabled.
-                Please <a href="https://www.enable-javascript.com/">enable</a> it to continue.</strong>
-        </noscript>
         <div id="map-container"></div>
         <div id="app"></div>
     </body>
