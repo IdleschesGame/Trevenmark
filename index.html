@@ -46,22 +46,22 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-    <!-- PAGE 1: STADTKARTE (BLUEMAP INTEGRATION) -->
+    <!-- PAGE 1: STADTKARTE (AUTOMATISCHE HYBRID-ERKENNUNG) -->
     <section id="page-map" class="page-content space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <div class="flex justify-between items-center mb-4">
           <div>
             <h2 class="text-2xl font-black">🗺️ Trevenmark Live 3D-Karte</h2>
-            <p class="text-slate-400 text-xs mt-1">Interaktive 3D-Kartenansicht powered by BlueMap. Falls eine Warnung erscheint, einmal auf "Visit Site" klicken.</p>
+            <p id="map-status-text" class="text-xs mt-1 text-slate-400">Verbindung wird geprüft...</p>
           </div>
-          <a href="https://diary-crispness-bagpipe.ngrok-free.dev" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center gap-1">
+          <a id="external-map-link" href="#" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center gap-1">
             ↗️ In neuem Tab öffnen
           </a>
         </div>
         
         <!-- BlueMap Live Embed -->
         <div class="w-full h-[600px] rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative bg-slate-950">
-          <iframe id="bluemap-frame" src="https://diary-crispness-bagpipe.ngrok-free.dev" class="w-full h-full border-0"></iframe>
+          <iframe id="bluemap-frame" src="" class="w-full h-full border-0"></iframe>
         </div>
       </div>
     </section>
@@ -169,8 +169,40 @@
     const SUPABASE_ANON_KEY = "sb_publishable_CMsxSeOj_19-r3MAQo6r7g_zsrsgTQO";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // KARTEN-STEUERUNG (LIVE VS OFFLINE)
+    const LIVE_NGROK_URL = "https://diary-crispness-bagpipe.ngrok-free.dev";
+    const OFFLINE_STATIC_URL = "/map-static/index.html"; // Pfad zum statischen Stand in deinem Projekt
+
     let currentUser = null;
     let isLoginMode = false;
+
+    // AUTOMATISCHE KARTEN-ERKENNUNG
+    async function initAutomaticMap() {
+      const frame = document.getElementById('bluemap-frame');
+      const statusText = document.getElementById('map-status-text');
+      const extLink = document.getElementById('external-map-link');
+
+      statusText.innerText = "Prüfe Server-Status...";
+
+      try {
+        // Prüft mit 2.5s Timeout, ob ngrok online ist
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+        await fetch(LIVE_NGROK_URL, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        // NGROK ONLINE -> LIVE-MODUS
+        frame.src = LIVE_NGROK_URL;
+        extLink.href = LIVE_NGROK_URL;
+        statusText.innerHTML = "🟢 <span class='text-emerald-400 font-bold'>Live Mode</span> – Server ist online (Live-Updates aktiv)";
+      } catch (err) {
+        // NGROK OFFLINE -> SCHALTE AUF DIESEN STATISCHEN STAND UM
+        frame.src = OFFLINE_STATIC_URL;
+        extLink.href = OFFLINE_STATIC_URL;
+        statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Offline Mode</span> – Zeigt den letzten Stand der Welt";
+      }
+    }
 
     function switchTab(tabId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
@@ -274,6 +306,7 @@
       const savedUser = localStorage.getItem('trevenmark_user');
       if(savedUser) currentUser = JSON.parse(savedUser);
       updateUI();
+      initAutomaticMap(); // Startet den Auto-Check!
     };
   </script>
 </body>
