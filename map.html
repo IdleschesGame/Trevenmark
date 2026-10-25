@@ -9,7 +9,7 @@
         <link rel="manifest" href="./assets/manifest-vz4Wm4Dd.webmanifest">
         <title>BlueMap</title>
 
-        <!-- Baut die harten Root-Pfade von BlueMap auf relative Pfade um -->
+        <!-- Baut die harten Root-Pfade von BlueMap auf relative Pfade um und fängt fehlende Texturen ab -->
         <script>
           const origFetch = window.fetch;
           window.fetch = function(resource, init) {
@@ -18,7 +18,11 @@
               if (url === '/settings.json' || url === 'settings.json') {
                 url = './settings.json';
               } else if (url === '/textures.json' || url === 'textures.json') {
-                url = './textures.json';
+                // Fängt textures.json ab und gibt direkt ein leeres JSON zurück (verhindert 404)
+                return Promise.resolve(new Response(JSON.stringify({}), {
+                  status: 200,
+                  headers: { 'Content-Type': 'application/json' }
+                }));
               } else if (url.startsWith('/maps/')) {
                 url = '.' + url;
               } else if (url.startsWith('/assets/')) {
