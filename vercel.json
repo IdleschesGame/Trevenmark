@@ -2,7 +2,8 @@
   "rewrites": [
     { "source": "/settings.json", "destination": "/map-static/settings.json" },
     { "source": "/textures.json", "destination": "/map-static/textures.json" },
-    { "source": "/maps/:match*", "destination": "/map-static/maps/:match*" },
-    { "source": "/lang/:match*", "destination": "/map-static/lang/:match*" }
+    { "source": "/assets/:path*", "destination": "/map-static/assets/:path*" },
+    { "source": "/maps/:path*", "destination": "/map-static/maps/:path*" },
+    { "source": "/lang/:path*", "destination": "/map-static/lang/:path*" }
   ]
 }
