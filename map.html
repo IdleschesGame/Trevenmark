@@ -9,22 +9,19 @@
         <link rel="manifest" href="./assets/manifest-vz4Wm4Dd.webmanifest">
         <title>BlueMap</title>
 
-        <!-- Perfekter Intercept für fetch und XHR mit echtem JavaScript-Objekt für textures.json -->
+        <!-- Baut die Root-Pfade von BlueMap sauber auf relative Pfade um (lädt textures.json direkt vom Server) -->
         <script>
-          // 1. Fetch Intercept
           const origFetch = window.fetch;
           window.fetch = function(resource, init) {
             let url = resource instanceof Request ? resource.url : resource;
-            if (typeof url === 'string' && url.indexOf('textures.json') !== -1) {
-              return Promise.resolve(new Response(JSON.stringify({ textures: [] }), {
-                status: 200,
-                headers: { 'Content-Type': 'application/json' }
-              }));
-            }
             if (typeof url === 'string') {
               if (url === '/settings.json' || url === 'settings.json') {
                 url = './settings.json';
-              } else if (url.startsWith('/maps/') || url.startsWith('/assets/') || url.startsWith('/lang/')) {
+              } else if (url.startsWith('/maps/')) {
+                url = '.' + url;
+              } else if (url.startsWith('/assets/')) {
+                url = '.' + url;
+              } else if (url.startsWith('/lang/')) {
                 url = '.' + url;
               }
             }
@@ -34,36 +31,6 @@
               resource = url;
             }
             return origFetch.call(this, resource, init);
-          };
-
-          // 2. XMLHttpRequest (XHR) Intercept mit echtem Objekt-Response
-          const origOpen = XMLHttpRequest.prototype.open;
-          XMLHttpRequest.prototype.open = function(method, url) {
-            if (typeof url === 'string' && url.indexOf('textures.json') !== -1) {
-              this._isInterceptedTextures = true;
-            }
-            return origOpen.apply(this, arguments);
-          };
-
-          const origSend = XMLHttpRequest.prototype.send;
-          XMLHttpRequest.prototype.send = function() {
-            if (this._isInterceptedTextures) {
-              Object.defineProperty(this, 'status', { value: 200, writable: true });
-              Object.defineProperty(this, 'statusText', { value: 'OK', writable: true });
-              Object.defineProperty(this, 'readyState', { value: 4, writable: true });
-              Object.defineProperty(this, 'responseText', { value: JSON.stringify({ textures: [] }), writable: true });
-              // Hier übergeben wir ein echtes JavaScript-Objekt statt eines Strings:
-              Object.defineProperty(this, 'response', { value: { textures: [] }, writable: true });
-              
-              if (typeof this.onload === 'function') {
-                this.onload();
-              }
-              if (typeof this.onreadystatechange === 'function') {
-                this.onreadystatechange();
-              }
-              return;
-            }
-            return origSend.apply(this, arguments);
           };
         </script>
 
