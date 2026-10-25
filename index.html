@@ -178,7 +178,10 @@
     let currentUser = null;
     let isLoginMode = false;
 
-    // AUTOMATISCHE KARTEN-ERKENNUNG
+
+
+
+// AUTOMATISCHE KARTEN-ERKENNUNG
     async function initAutomaticMap() {
       const frame = document.getElementById('bluemap-frame');
       const statusText = document.getElementById('map-status-text');
@@ -192,7 +195,10 @@
       extLink.href = OFFLINE_STATIC_URL;
       statusText.innerHTML = "🌙 <span class='text-amber-400 font-bold'>Static Mode</span> – Lädt fehlerfrei aus dem Root";
     }
-    }
+
+
+
+
 
     function switchTab(tabId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
