@@ -1,9 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/settings.json", "destination": "/map-static/settings.json" },
-    { "source": "/textures.json", "destination": "/map-static/textures.json" },
-    { "source": "/assets/:path*", "destination": "/map-static/assets/:path*" },
-    { "source": "/maps/:path*", "destination": "/map-static/maps/:path*" },
-    { "source": "/lang/:path*", "destination": "/map-static/lang/:path*" }
-  ]
-}

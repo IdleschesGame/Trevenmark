@@ -31,9 +31,7 @@
         <h1 class="text-xl font-black tracking-wider bg-gradient-to-r from-indigo-400 to-sky-400 bg-clip-text text-transparent">TREVENMARK</h1>
       </div>
       <nav class="hidden md:flex gap-6 text-sm font-semibold">
-        <button onclick="switchTab('map')" class="nav-btn text-indigo-400 hover:text-indigo-300 transition" data-target="page-map">🗺️ Stadtkarte</button>
-        <button onclick="switchTab('stadium')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-stadium">🎟️ Arena Tickets</button>
-        <button onclick="switchTab('properties')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-properties">🏡 Grundstücke</button>
+        <button onclick="switchTab('stadium')" class="nav-btn text-indigo-400 hover:text-indigo-300 transition" data-target="page-stadium">🎟️ Arena Tickets</button>
         <button onclick="switchTab('todos')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-todos">📋 Aufgaben</button>
         <button onclick="switchTab('dashboard')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-dashboard">👤 Mein Bereich</button>
         <button id="admin-nav-btn" onclick="switchTab('admin')" class="nav-btn text-amber-400 hover:text-amber-300 transition hidden" data-target="page-admin">⚡ Admin-Panel</button>
@@ -45,29 +43,8 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-    <!-- PAGE 1: STADTKARTE (HYBRID-ERKENNUNG) -->
-    <section id="page-map" class="page-content space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-        <div class="flex justify-between items-center mb-4">
-          <div class="flex items-center gap-3">
-            <h2 class="text-2xl font-black">🗺️ Trevenmark Live Karte</h2>
-            <div id="map-status-badge" class="flex items-center gap-1.5 bg-slate-950 px-3 py-1 rounded-full border border-slate-800 text-xs font-semibold">
-              <span class="w-2.5 h-2.5 rounded-full bg-slate-500 animate-pulse"></span>
-              <span id="map-status-text" class="text-slate-400">Prüfe...</span>
-            </div>
-          </div>
-          <a id="external-map-link" href="#" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center gap-1">
-            ↗️ In neuem Tab öffnen
-          </a>
-        </div>
-        <div class="w-full h-[600px] rounded-xl overflow-hidden border border-slate-800 shadow-2xl relative bg-slate-950">
-          <iframe id="bluemap-frame" src="" class="w-full h-full border-0"></iframe>
-        </div>
-      </div>
-    </section>
-
-    <!-- PAGE: ARENA SAALPLAN & TICKETS -->
-    <section id="page-stadium" class="page-content space-y-6 hidden">
+    <!-- PAGE 1: ARENA SAALPLAN & TICKETS -->
+    <section id="page-stadium" class="page-content space-y-6">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-6">
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <div>
@@ -158,21 +135,7 @@
       </div>
     </section>
 
-    <!-- PAGE 2: GRUNDSTÜCKE -->
-    <section id="page-properties" class="page-content space-y-6 hidden">
-      <div class="flex justify-between items-center">
-        <div>
-          <h2 class="text-2xl font-black">🏡 Grundstücke & Immobilien</h2>
-          <p class="text-slate-400 text-xs mt-1">Übersicht aller Grundstücke in Trevenmark.</p>
-        </div>
-        <button onclick="openPropertyModal()" id="new-property-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition hidden">
-          + Grundstück hinzufügen
-        </button>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="properties-grid"></div>
-    </section>
-
-    <!-- PAGE 3: AUFGABEN -->
+    <!-- PAGE 2: AUFGABEN -->
     <section id="page-todos" class="page-content space-y-6 hidden">
       <div class="flex justify-between items-center">
         <div>
@@ -186,7 +149,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="todos-grid"></div>
     </section>
 
-    <!-- PAGE 4: DASHBOARD -->
+    <!-- PAGE 3: DASHBOARD -->
     <section id="page-dashboard" class="page-content space-y-6 hidden">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
         <h2 class="text-2xl font-black mb-2">👤 Mein Bereich</h2>
@@ -205,7 +168,7 @@
       </div>
     </section>
 
-    <!-- PAGE 5: ADMIN PANEL -->
+    <!-- PAGE 4: ADMIN PANEL -->
     <section id="page-admin" class="page-content space-y-6 hidden">
       <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-6">
         <div>
@@ -315,9 +278,6 @@
     const SUPABASE_ANON_KEY = "sb_publishable_CMsxSeOj_19-r3MAQo6r7g_zsrsgTQO";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const LIVE_NGROK_URL = "https://diary-crispness-bagpipe.ngrok-free.dev";
-    const OFFLINE_STATIC_URL = "./map.html";
-
     let currentUser = null;
     let isLoginMode = false;
 
@@ -331,36 +291,6 @@
 
     // Struktur: [ { player: "Name", delivered: false } ]
     let userTickets = JSON.parse(localStorage.getItem('tm_user_tickets')) || [];
-
-    // KARTEN HYBRID CHECK
-    async function initAutomaticMap() {
-      const frame = document.getElementById('bluemap-frame');
-      const statusBadge = document.getElementById('map-status-badge');
-      const extLink = document.getElementById('external-map-link');
-
-      let targetUrl = OFFLINE_STATIC_URL;
-      let isLive = false;
-
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
-        await fetch(LIVE_NGROK_URL, { mode: 'no-cors', signal: controller.signal });
-        clearTimeout(timeoutId);
-        targetUrl = LIVE_NGROK_URL;
-        isLive = true;
-      } catch (e) {
-        isLive = false;
-      }
-
-      frame.src = targetUrl;
-      extLink.href = targetUrl;
-
-      if (isLive) {
-        statusBadge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.7)]"></span><span class="text-emerald-400 font-bold">Live</span>`;
-      } else {
-        statusBadge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span class="text-rose-400 font-bold">Offline</span>`;
-      }
-    }
 
     // ARENA & SAALPLAN RENDERER
     function renderStadium() {
@@ -539,30 +469,26 @@
       currentUser = null;
       localStorage.removeItem('trevenmark_user');
       updateUI();
-      switchTab('map');
+      switchTab('stadium');
     }
 
     function updateUI() {
       const authSection = document.getElementById('auth-section');
       const adminBtn = document.getElementById('admin-nav-btn');
-      const propBtn = document.getElementById('new-property-btn');
 
       if(currentUser) {
         authSection.innerHTML = `<div class="flex items-center gap-3"><span class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">👤 ${currentUser.ingame_name}</span><button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button></div>`;
         if(currentUser.role === 'admin') { 
           adminBtn.classList.remove('hidden'); 
-          if(propBtn) propBtn.classList.remove('hidden'); 
           loadAdminPanel(); 
           updateAdminUI();
         } else { 
           adminBtn.classList.add('hidden'); 
-          if(propBtn) propBtn.classList.add('hidden'); 
         }
         loadDashboard();
       } else {
         authSection.innerHTML = `<button onclick="openAuthModal(true)" class="text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5">Login</button><button onclick="openAuthModal(false)" class="bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white px-4 py-2 rounded-xl transition">Registrieren</button>`;
         adminBtn.classList.add('hidden'); 
-        if(propBtn) propBtn.classList.add('hidden');
       }
       renderStadium();
     }
@@ -657,7 +583,7 @@
       const savedUser = localStorage.getItem('trevenmark_user');
       if(savedUser) currentUser = JSON.parse(savedUser);
       updateUI();
-      initAutomaticMap();
+      renderStadium();
     };
   </script>
 </body>
