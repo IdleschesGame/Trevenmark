@@ -414,6 +414,14 @@
     }
 
     function switchTab(tabId) {
+      // Sicherheits-Check: Ohne Admin-Rechte kein Zugriff auf das Admin-Panel!
+      if (tabId === 'admin') {
+        if (!currentUser || currentUser.role !== 'admin') {
+          alert("Zugriff verweigert! Nur für Administratoren.");
+          return;
+        }
+      }
+
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('page-' + tabId).classList.remove('hidden');
       document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -429,9 +437,11 @@
       if(tabId === 'stadium') renderStadium();
       if(tabId === 'build') renderBlueprint();
       if(tabId === 'todos') loadTodos();
+      if(tabId === 'admin') loadAdminPanel();
     }
 
     function switchAdminSub(subId) {
+      if (!currentUser || currentUser.role !== 'admin') return;
       document.querySelectorAll('.admin-sub-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('admin-sub-' + subId).classList.remove('hidden');
       document.querySelectorAll('.admin-sub-btn').forEach(btn => {
@@ -462,6 +472,7 @@
 
     function handleCreateBlogPost(e) {
       e.preventDefault();
+      if (!currentUser || currentUser.role !== 'admin') return;
       const title = document.getElementById('blog-title-input').value.trim();
       const content = document.getElementById('blog-content-input').value.trim();
       const urlInput = document.getElementById('blog-img-url').value.trim();
@@ -494,6 +505,7 @@
     }
 
     function deleteBlogPost(idx) {
+      if (!currentUser || currentUser.role !== 'admin') return;
       if(confirm("Beitrag löschen?")) {
         blogPosts.splice(idx, 1);
         localStorage.setItem('tm_blog_posts', JSON.stringify(blogPosts));
@@ -512,6 +524,7 @@
     }
 
     function uploadBlueprint() {
+      if (!currentUser || currentUser.role !== 'admin') return;
       const f = document.getElementById('blueprint-file-input');
       if(f.files && f.files[0]) {
         const r = new FileReader();
@@ -590,6 +603,7 @@
 
     async function handleCreateTodo(e) {
       e.preventDefault();
+      if (!currentUser || currentUser.role !== 'admin') return;
       const title = document.getElementById('todo-title-input').value.trim();
       const description = document.getElementById('todo-desc-input').value.trim();
       await supabaseClient.from('todos').insert([{ title, description, status: 'open' }]);
@@ -599,6 +613,7 @@
     }
 
     function saveTournamentSettings() {
+      if (!currentUser || currentUser.role !== 'admin') return;
       tournamentData.name = document.getElementById('admin-tournament-name').value || tournamentData.name;
       tournamentData.date = document.getElementById('admin-tournament-date').value || tournamentData.date;
       tournamentData.maxSeats = parseInt(document.getElementById('admin-tournament-seats').value) || tournamentData.maxSeats;
@@ -608,6 +623,7 @@
     }
 
     function toggleTicketSale() {
+      if (!currentUser || currentUser.role !== 'admin') return;
       tournamentData.active = !tournamentData.active;
       localStorage.setItem('tm_tournament', JSON.stringify(tournamentData));
       alert(tournamentData.active ? "Verkauf geöffnet!" : "Verkauf geschlossen!");
@@ -616,6 +632,7 @@
     }
 
     function updateAdminUI() {
+      if (!currentUser || currentUser.role !== 'admin') return;
       const btn = document.getElementById('admin-toggle-ticket-btn');
       if(btn) {
         btn.innerText = tournamentData.active ? "Verkauf beenden" : "Saalplan freischalten";
@@ -669,17 +686,32 @@
       const adminBtn = document.getElementById('admin-nav-btn');
       if(currentUser) {
         section.innerHTML = `<div class="flex items-center gap-3 text-xs"><span class="font-bold">${currentUser.ingame_name}</span><button onclick="logout()" class="text-rose-600 font-bold hover:underline">Abmelden</button></div>`;
-        if(currentUser.role === 'admin') { adminBtn.classList.remove('hidden'); loadAdminPanel(); updateAdminUI(); }
-        else { adminBtn.classList.add('hidden'); }
+        if(currentUser.role === 'admin') { 
+          adminBtn.classList.remove('hidden'); 
+          loadAdminPanel(); 
+          updateAdminUI(); 
+        } else { 
+          adminBtn.classList.add('hidden'); 
+          // Falls jemand Admin war und sich ausloggt oder kein Admin ist, zurück auf Tourismus leiten
+          const activePage = document.querySelector('.page-content:not(.hidden)');
+          if(activePage && activePage.id === 'page-admin') {
+            switchTab('tourism');
+          }
+        }
         loadDashboard();
       } else {
         section.innerHTML = `<div class="flex items-center gap-3 text-xs"><button onclick="openAuthModal(true)" class="text-slate-600 dark:text-slate-400 font-semibold hover:underline">Login</button><button onclick="openAuthModal(false)" class="bg-[#12233f] text-white dark:bg-[#c69214] font-bold px-4 py-2">Registrieren</button></div>`;
         adminBtn.classList.add('hidden');
+        const activePage = document.querySelector('.page-content:not(.hidden)');
+        if(activePage && activePage.id === 'page-admin') {
+          switchTab('tourism');
+        }
       }
       renderStadium();
     }
 
     async function loadAdminPanel() {
+      if (!currentUser || currentUser.role !== 'admin') return;
       const { data } = await supabaseClient.from('profiles').select('*').eq('is_approved', false);
       const tbody = document.getElementById('admin-pending-users');
       tbody.innerHTML = '';
@@ -707,11 +739,13 @@
     }
 
     async function approveUser(id) {
+      if (!currentUser || currentUser.role !== 'admin') return;
       await supabaseClient.from('profiles').update({ is_approved: true }).eq('id', id);
       loadAdminPanel();
     }
 
     function toggleTicketDelivery(idx) {
+      if (!currentUser || currentUser.role !== 'admin') return;
       userTickets[idx].delivered = !userTickets[idx].delivered;
       localStorage.setItem('tm_user_tickets', JSON.stringify(userTickets));
       loadAdminPanel();
