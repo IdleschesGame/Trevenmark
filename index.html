@@ -43,12 +43,13 @@
       </div>
 
       <!-- NAV-BUTTONS -->
-      <nav class="hidden md:flex gap-6 text-sm font-semibold">
-        <button onclick="switchTab('stadium')" class="nav-btn text-blue-900 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition" data-target="page-stadium">🎟️ Arena Tickets</button>
+      <nav class="hidden md:flex gap-5 text-sm font-semibold">
+        <button onclick="switchTab('tourism')" class="nav-btn text-blue-900 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition" data-target="page-tourism">🚆 U-Bahn & Tourismus</button>
+        <button onclick="switchTab('stadium')" class="nav-btn text-slate-700 dark:text-slate-400 hover:text-blue-900 dark:hover:text-amber-300 transition" data-target="page-stadium">🎟️ Arena Tickets</button>
         <button onclick="switchTab('build')" class="nav-btn text-slate-700 dark:text-slate-400 hover:text-blue-900 dark:hover:text-amber-300 transition" data-target="page-build">🏗️ Bau & Planung</button>
         <button onclick="switchTab('todos')" class="nav-btn text-slate-700 dark:text-slate-400 hover:text-blue-900 dark:hover:text-amber-300 transition" data-target="page-todos">📋 Aufgaben</button>
         <button onclick="switchTab('dashboard')" class="nav-btn text-slate-700 dark:text-slate-400 hover:text-blue-900 dark:hover:text-amber-300 transition" data-target="page-dashboard">👤 Mein Bereich</button>
-        <button id="admin-nav-btn" onclick="switchTab('admin')" class="nav-btn text-amber-600 dark:text-amber-500 hover:text-blue-900 dark:hover:text-amber-400 transition hidden" data-target="page-admin">⚡ Admin-Panel</button>
+        <button id="admin-nav-btn" onclick="switchAdminSub('stadium'); switchTab('admin')" class="nav-btn text-amber-600 dark:text-amber-500 hover:text-blue-900 dark:hover:text-amber-400 transition hidden" data-target="page-admin">⚡ Admin-Panel</button>
       </nav>
 
       <!-- RECHTS: AUTH & LIGHT/DARK TOGGLE -->
@@ -65,8 +66,45 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
+    <!-- PAGE 0: TOURISMUS & U-BAHN (GANZ ALS ERSTES) -->
+    <section id="page-tourism" class="page-content space-y-8">
+      <!-- U-BAHN & Karte -->
+      <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-2xl border border-blue-900/20 dark:border-amber-500/20 shadow-xl space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+          <h2 class="text-3xl font-black text-blue-900 dark:text-amber-400">Unsere U-Bahn</h2>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
+            Willkommen im Verkehrsnetz von Trevenmark! Unser durchdachtes Ring-System verbindet alle wichtigen Sehenswürdigkeiten, Kultureinrichtungen und Veranstaltungsorte nahtlos miteinander. Egal ob zum Stadt-Cup in der Arena oder zum Flanieren im historischen Zentrum – mit unserer U-Bahn kommst du schnell und bequem an jedes Ziel.
+          </p>
+        </div>
+
+        <!-- BAHNPLAN BILD -->
+        <div class="bg-slate-50 dark:bg-[#0b0f19] p-6 rounded-2xl border border-blue-900/20 dark:border-amber-500/20 text-center space-y-4">
+          <h3 class="font-bold text-base text-blue-900 dark:text-amber-300">🚆 Offizieller Linien- und Ringplan</h3>
+          <div class="flex justify-center">
+            <img id="bahnplan-img" src="./Bahnplan.png" alt="Bahnplan Trevenmark" class="max-h-[500px] w-auto rounded-xl border border-amber-500/30 shadow-2xl object-contain" onerror="this.style.display='none'; document.getElementById('bahnplan-fallback').style.display='block';">
+          </div>
+          <div id="bahnplan-fallback" class="hidden py-12 space-y-3">
+            <span class="text-5xl">🗺️</span>
+            <p class="text-sm font-bold text-slate-700 dark:text-slate-300">Kein `Bahnplan.png` im Ordner gefunden.</p>
+            <p class="text-xs text-slate-500">Lege einfach eine Bilddatei namens <code class="text-amber-600 dark:text-amber-400 font-bold">Bahnplan.png</code> in deinen Projektordner auf Vercel.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOG / NEUIGKEITEN SEKTION -->
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="text-2xl font-black text-blue-900 dark:text-amber-400">📰 Trevenmark Blog & Neuigkeiten</h3>
+          <p class="text-xs text-slate-500">Aktuelles aus der Stadt der Kultur</p>
+        </div>
+        <div id="blog-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Dynamische Blogbeiträge landen hier -->
+        </div>
+      </div>
+    </section>
+
     <!-- PAGE 1: ARENA TICKETS -->
-    <section id="page-stadium" class="page-content space-y-6">
+    <section id="page-stadium" class="page-content space-y-6 hidden">
       <div class="bg-white dark:bg-[#111827] p-6 rounded-2xl border border-blue-900/20 dark:border-amber-500/20 shadow-xl space-y-6">
         <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-4">
           <div>
@@ -165,9 +203,6 @@
           <h2 class="text-2xl font-black text-blue-900 dark:text-amber-400">📋 Aufgaben & To-Dos</h2>
           <p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Normale Spieler können max. 3 aktive Aufgaben gleichzeitig besitzen.</p>
         </div>
-        <button onclick="openTodoModal()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition border border-amber-500/30">
-          + Aufgabe erstellen
-        </button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="todos-grid"></div>
     </section>
@@ -199,12 +234,13 @@
           <p class="text-slate-500 dark:text-slate-400 text-xs">Wähle einen Bereich zur Verwaltung aus.</p>
         </div>
 
-        <!-- UNTERTEILUNGS-BUTTONS FÜR ADMIN -->
+        <!-- UNTERTEILUNGS-BUTTONS FÜR ADMIN (INKL. BLOG) -->
         <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
           <button onclick="switchAdminSub('stadium')" id="admin-btn-stadium" class="admin-sub-btn bg-blue-900 text-white font-bold text-xs px-4 py-2 rounded-xl transition border border-amber-500/30">⚽ Turnier & Arena</button>
+          <button onclick="switchAdminSub('blog')" id="admin-btn-blog" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">📰 Blog verwalten</button>
           <button onclick="switchAdminSub('build')" id="admin-btn-build" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">🏗️ Bauplan Upload</button>
-          <button onclick="switchAdminSub('users')" id="admin-btn-users" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">👥 Registrierungen</button>
-          <button onclick="switchAdminSub('todos')" id="admin-btn-todos" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">📋 Aufgaben Erstellen</button>
+          <button onclick="switchAdminSub('users')" id="admin-btn-users" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">👥 Registrierungen</button>
+          <button onclick="switchAdminSub('todos')" id="admin-btn-todos" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">📋 Aufgaben Erstellen</button>
         </div>
 
         <!-- SUB 1: TURNIER & ARENA ORGA -->
@@ -256,11 +292,39 @@
           </div>
         </div>
 
+        <!-- SUB 1.5: BLOG VERWALTEN -->
+        <div id="admin-sub-blog" class="admin-sub-content space-y-6 hidden">
+          <div class="bg-slate-50 dark:bg-[#0b0f19] p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <h3 class="font-bold text-sm text-blue-900 dark:text-amber-300">📰 Neuen Blog-Beitrag erstellen</h3>
+            <form onsubmit="handleCreateBlogPost(event)" class="space-y-4 max-w-xl">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Titel des Beitrags</label>
+                <input type="text" id="blog-title-input" required class="w-full bg-white dark:bg-[#111827] border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-sm" placeholder="z.B. Eröffnung der neuen U-Bahn-Linie">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Bild (Datei hochladen oder Bild-URL)</label>
+                <input type="file" id="blog-file-input" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-900 file:text-white cursor-pointer mb-2">
+                <input type="text" id="blog-img-url" placeholder="Oder Bild-URL einfügen (https://...)" class="w-full bg-white dark:bg-[#111827] border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Beitragstext</label>
+                <textarea id="blog-content-input" rows="4" required class="w-full bg-white dark:bg-[#111827] border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-sm" placeholder="Schreibe hier deinen Blog-Text..."></textarea>
+              </div>
+              <button type="submit" class="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition border border-amber-500/30">Beitrag veröffentlichen</button>
+            </form>
+          </div>
+
+          <div class="bg-slate-50 dark:bg-[#0b0f19] p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <h3 class="font-bold text-sm text-blue-900 dark:text-amber-300">🗑️ Vorhandene Blog-Beiträge</h3>
+            <div id="admin-blog-list" class="space-y-3"></div>
+          </div>
+        </div>
+
         <!-- SUB 2: BAUPLAN UPLOAD -->
         <div id="admin-sub-build" class="admin-sub-content space-y-6 hidden">
           <div class="bg-slate-50 dark:bg-[#0b0f19] p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
             <h3 class="font-bold text-sm text-blue-900 dark:text-amber-300">🏗️ Bauplan-Bild hochladen</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Lade hier das Bild eures Bauplans hoch (wird direkt im Browser gespeichert und angezeigt) oder lege eine Datei namens <code class="text-blue-900 dark:text-amber-400 font-bold">bauplan.png</code> in deinen Ordner.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Lade hier das Bild eures Bauplans hoch oder lege eine Datei namens <code class="text-blue-900 dark:text-amber-400 font-bold">bauplan.png</code> in deinen Ordner.</p>
             <div class="flex items-center gap-4">
               <input type="file" id="blueprint-file-input" accept="image/*" class="text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-900 file:text-white cursor-pointer">
               <button onclick="uploadBlueprint()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition border border-amber-500/30">Hochladen & Anwenden</button>
@@ -354,6 +418,9 @@
 
     let userTickets = JSON.parse(localStorage.getItem('tm_user_tickets')) || [];
     let blueprintData = localStorage.getItem('tm_blueprint_image') || "";
+    let blogPosts = JSON.parse(localStorage.getItem('tm_blog_posts')) || [
+      { id: 1, title: "Willkommen in Trevenmark!", content: "Unser neues Stadtportal ist online. Entdecke alle Sehenswürdigkeiten über unsere neue U-Bahn-Karte.", image: "", date: "2026-11-07" }
+    ];
 
     // LIGHT / DARK MODE TOGGLE
     function toggleDarkMode() {
@@ -378,6 +445,7 @@
       const activeBtn = document.querySelector(`[data-target="page-${tabId}"]`);
       if(activeBtn) activeBtn.classList.add(tabId === 'admin' ? 'text-amber-600' : 'text-blue-900', 'dark:text-amber-400');
       
+      if(tabId === 'tourism') renderBlogPosts();
       if(tabId === 'stadium') renderStadium();
       if(tabId === 'build') renderBlueprint();
       if(tabId === 'todos') loadTodos();
@@ -390,6 +458,96 @@
         btn.className = "admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800";
       });
       document.getElementById('admin-btn-' + subId).className = "admin-sub-btn bg-blue-900 text-white dark:bg-amber-600 dark:text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition border border-amber-500/30";
+      
+      if(subId === 'blog') renderAdminBlogList();
+    }
+
+    // BLOG SYSTEM
+    function renderBlogPosts() {
+      const grid = document.getElementById('blog-posts-grid');
+      grid.innerHTML = '';
+      if(!blogPosts || blogPosts.length === 0) {
+        grid.innerHTML = `<p class="text-slate-500 text-xs col-span-3">Noch keine Blog-Beiträge vorhanden.</p>`;
+        return;
+      }
+      blogPosts.forEach(post => {
+        grid.innerHTML += `
+          <div class="bg-white dark:bg-[#111827] rounded-2xl border border-blue-900/20 dark:border-amber-500/20 overflow-hidden shadow-lg flex flex-col">
+            ${post.image ? `<img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover">` : ''}
+            <div class="p-5 flex flex-col flex-grow space-y-3">
+              <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase">${post.date}</span>
+              <h4 class="font-bold text-blue-900 dark:text-amber-300 text-base">${post.title}</h4>
+              <p class="text-xs text-slate-600 dark:text-slate-400 flex-grow leading-relaxed">${post.content}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function handleCreateBlogPost(e) {
+      e.preventDefault();
+      const title = document.getElementById('blog-title-input').value.trim();
+      const content = document.getElementById('blog-content-input').value.trim();
+      const urlInput = document.getElementById('blog-img-url').value.trim();
+      const fileInput = document.getElementById('blog-file-input');
+
+      const savePostWithImage = (imgSrc) => {
+        const newPost = {
+          id: Date.now(),
+          title,
+          content,
+          image: imgSrc || urlInput,
+          date: new Date().toLocaleDateString('de-DE')
+        };
+        blogPosts.unshift(newPost);
+        localStorage.setItem('tm_blog_posts', JSON.stringify(blogPosts));
+        alert("Blog-Beitrag erfolgreich veröffentlicht!");
+        document.getElementById('blog-title-input').value = '';
+        document.getElementById('blog-content-input').value = '';
+        document.getElementById('blog-img-url').value = '';
+        fileInput.value = '';
+        renderAdminBlogList();
+        renderBlogPosts();
+      };
+
+      if(fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          savePostWithImage(evt.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        savePostWithImage("");
+      }
+    }
+
+    function renderAdminBlogList() {
+      const listDiv = document.getElementById('admin-blog-list');
+      listDiv.innerHTML = '';
+      if(blogPosts.length === 0) {
+        listDiv.innerHTML = `<p class="text-slate-500 text-xs">Keine Beiträge vorhanden.</p>`;
+        return;
+      }
+      blogPosts.forEach((post, index) => {
+        listDiv.innerHTML += `
+          <div class="bg-white dark:bg-[#111827] p-3 rounded-lg border border-slate-200 dark:border-slate-800 flex justify-between items-center text-xs">
+            <div>
+              <b class="text-blue-900 dark:text-white">${post.title}</b>
+              <span class="text-slate-400 ml-2">(${post.date})</span>
+            </div>
+            <button onclick="deleteBlogPost(${index})" class="text-rose-500 font-bold hover:underline">Löschen</button>
+          </div>
+        `;
+      });
+    }
+
+    function deleteBlogPost(index) {
+      if(confirm("Diesen Blog-Beitrag löschen?")) {
+        blogPosts.splice(index, 1);
+        localStorage.setItem('tm_blog_posts', JSON.stringify(blogPosts));
+        renderAdminBlogList();
+        renderBlogPosts();
+      }
     }
 
     // BAUPLAN RENDERER
@@ -595,7 +753,6 @@
     function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
     function toggleAuthMode() { openAuthModal(!isLoginMode); }
 
-    // AUTH (MIT 'discord' SPALTE)
     async function handleAuth(e) {
       e.preventDefault();
       const ign = document.getElementById('ign-input').value.trim();
@@ -623,7 +780,7 @@
       currentUser = null;
       localStorage.removeItem('trevenmark_user');
       updateUI();
-      switchTab('stadium');
+      switchTab('tourism');
     }
 
     function updateUI() {
@@ -644,7 +801,7 @@
         authSection.innerHTML = `<button onclick="openAuthModal(true)" class="text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-blue-900 dark:hover:text-amber-500 px-3 py-1.5">Login</button><button onclick="openAuthModal(false)" class="bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs px-4 py-2 rounded-xl transition border border-amber-500/30">Registrieren</button>`;
         adminBtn.classList.add('hidden'); 
       }
-      renderStadium();
+      renderBlogPosts();
     }
 
     async function loadAdminPanel() {
@@ -733,7 +890,7 @@
       const savedUser = localStorage.getItem('trevenmark_user');
       if(savedUser) currentUser = JSON.parse(savedUser);
       updateUI();
-      renderStadium();
+      renderBlogPosts();
     };
   </script>
 </body>
