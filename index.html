@@ -66,14 +66,14 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-    <!-- PAGE 0: TOURISMUS & U-BAHN (GANZ ALS ERSTES) -->
+    <!-- PAGE 0: TOURISMUS & U-BAHN -->
     <section id="page-tourism" class="page-content space-y-8">
-      <!-- U-BAHN & Karte -->
+      <!-- U-Bahn & Karte -->
       <div class="bg-white dark:bg-[#111827] p-6 md:p-8 rounded-2xl border border-blue-900/20 dark:border-amber-500/20 shadow-xl space-y-6">
         <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
           <h2 class="text-3xl font-black text-blue-900 dark:text-amber-400">Unsere U-Bahn</h2>
           <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
-            Willkommen im Verkehrsnetz von Trevenmark! Unser durchdachtes Ring-System verbindet alle wichtigen Sehenswürdigkeiten, Kultureinrichtungen und Veranstaltungsorte nahtlos miteinander. Egal ob zum Stadt-Cup in der Arena oder zum Flanieren im historischen Zentrum – mit unserer U-Bahn kommst du schnell und bequem an jedes Ziel.
+            Moin und herzlich willkommen in Trevenmark! Wenn du entspannt von A nach B kommen willst, bist du bei unserer U-Bahn genau richtig: Die zentrale Ring-Linie verbindet alle wichtigen Sehenswürdigkeiten, das grüne Idyll am Nordpark sowie sämtliche Veranstaltungsorte direkt miteinander. So bist du blitzschnell im Zentrum oder bei den nächsten großen Events.
           </p>
         </div>
 
@@ -109,7 +109,7 @@
         <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-4">
           <div>
             <h2 class="text-2xl font-black flex items-center gap-2 text-blue-900 dark:text-amber-400">⚽ Trevenmark Arena – Ticketshop</h2>
-            <p id="tournament-info-text" class="text-xs text-slate-500 dark:text-slate-400 mt-1">Lade Turnierdaten...</p>
+            <p id="tournament-info-text" class="text-xs text-slate-500 dark:text-slate-400 mt-1">Lade Veranstaltungsdaten...</p>
           </div>
           <div id="my-ticket-badge" class="hidden bg-blue-50 dark:bg-blue-950/60 border border-amber-500/30 px-4 py-2 rounded-xl text-xs font-bold text-blue-900 dark:text-amber-300">
             Dein Status: <span id="my-ticket-type" class="text-blue-900 dark:text-white font-black text-sm">Kein Ticket</span>
@@ -119,7 +119,7 @@
         <div id="stadium-locked-msg" class="bg-slate-50 dark:bg-[#0b0f19] p-12 rounded-xl border border-slate-200 dark:border-slate-800 text-center space-y-3">
           <span class="text-4xl">🔒</span>
           <h3 class="text-xl font-bold text-slate-700 dark:text-slate-300">Der Ticketverkauf ist aktuell geschlossen.</h3>
-          <p class="text-xs text-slate-500">Es findet derzeit kein angekündigtes Turnier statt oder der Saalplan wurde von der Admin-Leitung noch nicht freigeschaltet.</p>
+          <p class="text-xs text-slate-500">Es findet derzeit keine angekündigte Veranstaltung statt oder der Saalplan wurde von der Admin-Leitung noch nicht freigeschaltet.</p>
         </div>
 
         <div id="stadium-interactive" class="space-y-8 hidden">
@@ -136,7 +136,7 @@
           <!-- SAALPLAN UMRISS -->
           <div class="max-w-3xl mx-auto bg-slate-50 dark:bg-[#0b0f19] p-6 rounded-2xl border border-blue-900/20 dark:border-amber-500/20 flex flex-col items-center gap-3">
             <div class="w-3/4 mx-auto bg-blue-100 dark:bg-blue-950/40 border border-blue-400/40 p-2 rounded-xl text-center">
-              <div class="text-[11px] font-black text-blue-900 dark:text-amber-300 uppercase">🔍 Turnierleitung & Schiris</div>
+              <div class="text-[11px] font-black text-blue-900 dark:text-amber-300 uppercase">🔍 Veranstaltungsleitung & Schiris</div>
               <div class="text-[9px] text-blue-700 dark:text-blue-300">Gesperrter Glaskasten</div>
             </div>
 
@@ -152,7 +152,7 @@
                 <div class="w-full h-32 bg-emerald-100 dark:bg-emerald-950/30 border-2 border-emerald-600/40 rounded-xl flex items-center justify-center relative overflow-hidden">
                   <div class="absolute inset-x-0 top-1/2 border-t border-emerald-500/20"></div>
                   <div class="w-16 h-16 rounded-full border border-emerald-500/20 absolute"></div>
-                  <span class="text-xs font-black text-emerald-800 dark:text-emerald-400/90 z-10 tracking-widest uppercase">⚽ Spielfeld</span>
+                  <span class="text-xs font-black text-emerald-800 dark:text-emerald-400/90 z-10 tracking-widest uppercase">⚽ Spielfeld / Eventbereich</span>
                 </div>
                 <div class="w-full bg-blue-100/60 dark:bg-blue-950/30 border border-blue-300/60 dark:border-blue-500/30 py-2 text-center rounded-lg text-xs font-bold text-blue-900 dark:text-amber-200">
                   Tribüne Süd (Sitzplätze)
@@ -234,23 +234,23 @@
           <p class="text-slate-500 dark:text-slate-400 text-xs">Wähle einen Bereich zur Verwaltung aus.</p>
         </div>
 
-        <!-- UNTERTEILUNGS-BUTTONS FÜR ADMIN (INKL. BLOG) -->
+        <!-- UNTERTEILUNGS-BUTTONS FÜR ADMIN -->
         <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-4">
-          <button onclick="switchAdminSub('stadium')" id="admin-btn-stadium" class="admin-sub-btn bg-blue-900 text-white font-bold text-xs px-4 py-2 rounded-xl transition border border-amber-500/30">⚽ Turnier & Arena</button>
+          <button onclick="switchAdminSub('stadium')" id="admin-btn-stadium" class="admin-sub-btn bg-blue-900 text-white font-bold text-xs px-4 py-2 rounded-xl transition border border-amber-500/30">🏟️ Veranstaltungen & Arena</button>
           <button onclick="switchAdminSub('blog')" id="admin-btn-blog" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">📰 Blog verwalten</button>
           <button onclick="switchAdminSub('build')" id="admin-btn-build" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">🏗️ Bauplan Upload</button>
           <button onclick="switchAdminSub('users')" id="admin-btn-users" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">👥 Registrierungen</button>
           <button onclick="switchAdminSub('todos')" id="admin-btn-todos" class="admin-sub-btn bg-slate-100 dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-300 dark:border-slate-800">📋 Aufgaben Erstellen</button>
         </div>
 
-        <!-- SUB 1: TURNIER & ARENA ORGA -->
+        <!-- SUB 1: VERANSTALTUNGEN & ARENA ORGA -->
         <div id="admin-sub-stadium" class="admin-sub-content space-y-6">
           <div class="bg-slate-50 dark:bg-[#0b0f19] p-5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <h3 class="font-bold text-sm text-blue-900 dark:text-amber-300">⚽ Turnier- & Kapazitäts-Einstellungen</h3>
+            <h3 class="font-bold text-sm text-blue-900 dark:text-amber-300">🏟️ Veranstaltungs- & Kapazitäts-Einstellungen</h3>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Turnier-Name</label>
-                <input type="text" id="admin-tournament-name" placeholder="z.B. Stadt-Cup 2026" class="w-full bg-white dark:bg-[#111827] border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-sm">
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Veranstaltungs-Name</label>
+                <input type="text" id="admin-tournament-name" placeholder="z.B. Stadt-Meisterschaft" class="w-full bg-white dark:bg-[#111827] border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Datum & Uhrzeit</label>
@@ -419,7 +419,7 @@
     let userTickets = JSON.parse(localStorage.getItem('tm_user_tickets')) || [];
     let blueprintData = localStorage.getItem('tm_blueprint_image') || "";
     let blogPosts = JSON.parse(localStorage.getItem('tm_blog_posts')) || [
-      { id: 1, title: "Willkommen in Trevenmark!", content: "Unser neues Stadtportal ist online. Entdecke alle Sehenswürdigkeiten über unsere neue U-Bahn-Karte.", image: "", date: "2026-11-07" }
+      { id: 1, title: "Willkommen in Trevenmark!", content: "Unser neues Stadtportal ist online. Entdecke alle Sehenswürdigkeiten und den Nordpark über unsere neue U-Bahn-Karte.", image: "", date: "2026-11-07" }
     ];
 
     // LIGHT / DARK MODE TOGGLE
@@ -592,14 +592,14 @@
       if(!tournamentData.active) {
         lockedMsg.classList.remove('hidden');
         interactive.classList.add('hidden');
-        infoText.innerText = "Derzeit ist kein Turnier-Ticketverkauf aktiv.";
+        infoText.innerText = "Derzeit ist kein Ticketverkauf aktiv.";
         return;
       }
 
       lockedMsg.classList.add('hidden');
       interactive.classList.remove('hidden');
       const formattedDate = new Date(tournamentData.date).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' });
-      infoText.innerHTML = `<b class="text-blue-900 dark:text-amber-400">${tournamentData.name}</b> • Vorverkauf geöffnet (Anpfiff: ${formattedDate} Uhr)`;
+      infoText.innerHTML = `<b class="text-blue-900 dark:text-amber-400">${tournamentData.name}</b> • Vorverkauf geöffnet (Beginn: ${formattedDate} Uhr)`;
 
       const bookedCount = userTickets.length;
       const maxSeats = tournamentData.maxSeats || 39;
@@ -701,7 +701,7 @@
       if(seats && seats > 0) tournamentData.maxSeats = seats;
 
       localStorage.setItem('tm_tournament', JSON.stringify(tournamentData));
-      alert("Turnier-Einstellungen gespeichert!");
+      alert("Veranstaltungs-Einstellungen gespeichert!");
       renderStadium();
       updateAdminUI();
     }
