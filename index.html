@@ -20,24 +20,6 @@
       }
     }
   </script>
-  <style>
-    .seat {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .seat-free { background-color: #10b981; color: #fff; }
-    .seat-free:hover { background-color: #059669; transform: scale(1.1); }
-    .seat-taken { background-color: #ef4444; color: #fff; cursor: not-allowed; opacity: 0.6; }
-    .seat-staff { background-color: #3b82f6; color: #fff; cursor: not-allowed; }
-  </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
@@ -93,7 +75,7 @@
             <p id="tournament-info-text" class="text-xs text-slate-400 mt-1">Lade Turnierdaten...</p>
           </div>
           <div id="my-ticket-badge" class="hidden bg-indigo-950 border border-indigo-500/30 px-4 py-2 rounded-xl text-xs font-bold text-indigo-300">
-            Dein Platz: <span id="my-seat-num" class="text-white font-black text-sm">Keiner</span>
+            Dein Ticket: <span id="my-ticket-type" class="text-white font-black text-sm">Keins</span>
           </div>
         </div>
 
@@ -104,54 +86,62 @@
           <p class="text-xs text-slate-500">Es findet derzeit kein angekündigtes Turnier statt oder der Saalplan wurde von der Admin-Leitung noch nicht freigeschaltet.</p>
         </div>
 
-        <!-- Wenn EIN Turnier freigeschaltet ist (Der Saalplan) -->
+        <!-- Wenn EIN Turnier freigeschaltet ist -->
         <div id="stadium-interactive" class="space-y-8 hidden">
           
-          <!-- Legende -->
-          <div class="flex flex-wrap justify-center gap-4 text-xs font-semibold bg-slate-950 p-3 rounded-xl border border-slate-800">
-            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-emerald-500"></span> Frei</div>
-            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-blue-500"></span> Turnierleitung / Schiri (Gesperrt)</div>
-            <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-rose-500"></span> Besetzt</div>
+          <!-- KAUF-BUTTONS -->
+          <div class="flex flex-wrap justify-center gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <button onclick="buyTicket('Zuschauer')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg flex items-center gap-2">
+              🎟️ Normales Ticket kaufen (<span id="count-normal-free">0</span> Frei)
+            </button>
+            <button onclick="buyTicket('VIP')" class="bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg flex items-center gap-2">
+              ⭐ VIP Ticket kaufen (<span id="count-vip-free">0</span> Frei)
+            </button>
           </div>
 
-          <!-- SAALPLAN CONTAINER -->
-          <div class="max-w-4xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center gap-6">
-
-            <!-- OBERE TRIBÜNE (Blöcke A - G) -->
-            <div class="w-full space-y-2">
-              <div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest">Tribüne Nord (Blöcke A – G)</div>
-              <div id="grid-top-tribune" class="grid grid-cols-7 gap-3 bg-slate-900/50 p-4 rounded-xl border border-slate-800/80"></div>
+          <!-- ARENA SAALPLAN VISUALISIERUNG -->
+          <div class="max-w-3xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center gap-4 relative">
+            
+            <!-- 1. OBEN: TURNIERLEITUNG & SCHIRIS (GLASKASTEN) -->
+            <div class="w-full bg-blue-950/40 border-2 border-blue-500/40 p-3 rounded-xl text-center space-y-1">
+              <div class="text-xs font-black text-blue-300 uppercase tracking-wider">
+                🔍 Glaskasten (Turnierleitung & Schiris)
+              </div>
+              <p class="text-[10px] text-blue-400">Reserviert für Admins & Schiedsrichter</p>
             </div>
 
-            <!-- MITTELBEREICH: SPIELFELD & GLASKASTEN -->
-            <div class="w-full grid grid-cols-12 gap-4 items-center my-2">
+            <!-- MITTE: TRIBÜNEN LINKS / FELD / TRIBÜNEN RECHTS -->
+            <div class="w-full grid grid-cols-12 gap-3 items-center">
               
-              <!-- GLASKASTEN (Turnierleitung & Schiris) -->
-              <div class="col-span-3 bg-blue-950/40 border-2 border-blue-500/40 p-3 rounded-xl text-center space-y-2">
-                <div class="text-[11px] font-black text-blue-300 uppercase tracking-wider">
-                  🔍 Glaskasten
-                </div>
-                <div class="text-[9px] text-blue-400">Turnierleitung & Schiris</div>
-                <div class="flex justify-center gap-1.5 pt-1">
-                  <div class="seat seat-staff">S1</div>
-                  <div class="seat seat-staff">S2</div>
-                  <div class="seat seat-staff">TL</div>
-                </div>
+              <!-- Tribüne Links -->
+              <div class="col-span-2 bg-slate-900/60 border border-slate-800 p-2 rounded-xl text-center space-y-1 h-36 flex flex-col justify-center">
+                <span class="text-xs font-bold text-slate-400">Blöcke</span>
+                <span class="text-sm font-black text-indigo-400">A – G</span>
+                <span class="text-[10px] text-slate-500">Tribüne West</span>
               </div>
 
-              <!-- DAS SPIELFELD -->
-              <div class="col-span-9 h-28 bg-emerald-950/40 border-2 border-emerald-600/50 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
+              <!-- DAS SPIELFELD (ZENTRUM) -->
+              <div class="col-span-8 h-36 bg-emerald-950/40 border-2 border-emerald-600/50 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
                 <div class="absolute inset-x-0 top-1/2 border-t border-emerald-500/30"></div>
-                <div class="w-16 h-16 rounded-full border border-emerald-500/30 absolute"></div>
-                <span class="text-xs font-black text-emerald-400/80 z-10 tracking-widest">SPIELFELD</span>
+                <div class="w-20 h-20 rounded-full border border-emerald-500/30 absolute"></div>
+                <span class="text-sm font-black text-emerald-400/90 z-10 tracking-widest uppercase">⚽ Arena Spielfeld</span>
+              </div>
+
+              <!-- Tribüne Rechts -->
+              <div class="col-span-2 bg-slate-900/60 border border-slate-800 p-2 rounded-xl text-center space-y-1 h-36 flex flex-col justify-center">
+                <span class="text-xs font-bold text-slate-400">Blöcke</span>
+                <span class="text-sm font-black text-sky-400">J – O</span>
+                <span class="text-[10px] text-slate-500">Tribüne Ost</span>
               </div>
 
             </div>
 
-            <!-- UNTERE TRIBÜNE (Blöcke J - O) -->
-            <div class="w-full space-y-2">
-              <div id="grid-bottom-tribune" class="grid grid-cols-6 gap-3 bg-slate-900/50 p-4 rounded-xl border border-slate-800/80"></div>
-              <div class="text-center text-xs font-bold text-slate-400 uppercase tracking-widest pt-1">Tribüne Süd (Blöcke J – O)</div>
+            <!-- 2. UNTEN: VIP BEREICH -->
+            <div class="w-full bg-amber-950/40 border-2 border-amber-500/40 p-3 rounded-xl text-center space-y-1">
+              <div class="text-xs font-black text-amber-300 uppercase tracking-wider">
+                ⭐ VIP Bereich
+              </div>
+              <p class="text-[10px] text-amber-400">Exklusive Loge für VIP-Ticket Inhaber</p>
             </div>
 
           </div>
@@ -244,13 +234,13 @@
 
         <!-- LISTE ALLER TICKET-BUCHUNGEN (ADMIN LIEFERANZEIGE) -->
         <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-          <h3 class="font-bold text-sm text-sky-400 flex items-center gap-2">🎟️ Gebuchte Tickets & Lieferung an Spieler</h3>
+          <h3 class="font-bold text-sm text-sky-400 flex items-center gap-2">🎟️ Gebuchte Tickets & Übergabe an Spieler</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm text-slate-300">
               <thead class="bg-slate-900 text-slate-400 text-xs uppercase">
                 <tr>
-                  <th class="p-3 rounded-l-lg">Sitzplatz</th>
-                  <th class="p-3">Spieler (Ingame)</th>
+                  <th class="p-3 rounded-l-lg">Spieler (Ingame)</th>
+                  <th class="p-3">Ticket Typ</th>
                   <th class="p-3">Status</th>
                   <th class="p-3 rounded-r-lg text-right">Aktion</th>
                 </tr>
@@ -320,15 +310,19 @@
     let currentUser = null;
     let isLoginMode = false;
 
-    // TURNIER & STADION STATE
+    // KONTINGENTE
+    const MAX_NORMAL_TICKETS = 39;
+    const MAX_VIP_TICKETS = 6;
+
+    // STATE
     let tournamentData = JSON.parse(localStorage.getItem('tm_tournament')) || {
       name: "Trevenmark Meisterschaft 2026",
       date: "2026-11-20T18:00",
       active: false
     };
 
-    // Stuktur von bookedSeats: { "A-11": { player: "Name", delivered: false } }
-    let bookedSeats = JSON.parse(localStorage.getItem('tm_booked_seats')) || {};
+    // Stuktur von userTickets: [ { player: "Name", type: "Zuschauer", delivered: false } ]
+    let userTickets = JSON.parse(localStorage.getItem('tm_user_tickets')) || [];
 
     // KARTEN HYBRID CHECK
     async function initAutomaticMap() {
@@ -378,114 +372,66 @@
       const formattedDate = new Date(tournamentData.date).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' });
       infoText.innerHTML = `<b class="text-indigo-400">${tournamentData.name}</b> • Vorverkauf geöffnet (Anpfiff: ${formattedDate} Uhr)`;
 
-      // User Ticket Badge prüfen
-      const mySeatBadge = document.getElementById('my-ticket-badge');
-      const mySeatNum = document.getElementById('my-seat-num');
-      let mySeat = null;
-      if(currentUser) {
-        Object.keys(bookedSeats).forEach(s => {
-          const booking = getBooking(s);
-          if(booking && booking.player === currentUser.ingame_name) mySeat = s;
-        });
-      }
-      if(mySeat) {
-        mySeatBadge.classList.remove('hidden');
-        mySeatNum.innerText = mySeat;
+      // Ticket-Zähler berechnen
+      const normalCount = userTickets.filter(t => t.type === 'Zuschauer').length;
+      const vipCount = userTickets.filter(t => t.type === 'VIP').length;
+
+      document.getElementById('count-normal-free').innerText = MAX_NORMAL_TICKETS - normalCount;
+      document.getElementById('count-vip-free').innerText = MAX_VIP_TICKETS - vipCount;
+
+      // User Ticket Badge
+      const myTicketBadge = document.getElementById('my-ticket-badge');
+      const myTicketType = document.getElementById('my-ticket-type');
+      let myTicket = currentUser ? userTickets.find(t => t.player === currentUser.ingame_name) : null;
+
+      if(myTicket) {
+        myTicketBadge.classList.remove('hidden');
+        myTicketType.innerText = myTicket.type + " Ticket";
       } else {
-        mySeatBadge.classList.add('hidden');
+        myTicketBadge.classList.add('hidden');
       }
-
-      // 1. Obere Tribüne (Blöcke A - G)
-      const topBlocks = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-      const topContainer = document.getElementById('grid-top-tribune');
-      topContainer.innerHTML = '';
-
-      topBlocks.forEach(block => {
-        let blockHtml = `<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center"><div class="text-xs font-black text-indigo-400 mb-1.5">Block ${block}</div><div class="grid grid-cols-3 gap-1">`;
-        for(let r = 1; r <= 3; r++) {
-          for(let s = 1; s <= 3; s++) {
-            const seatId = `${block}-${r}${s}`;
-            const booking = getBooking(seatId);
-            const isTaken = !!booking;
-            const takenBy = booking ? booking.player : '';
-            const isMySeat = currentUser && takenBy === currentUser.ingame_name;
-
-            let seatClass = isTaken ? 'seat-taken' : 'seat-free';
-            if(isMySeat) seatClass = 'bg-indigo-600 text-white font-black ring-2 ring-white';
-
-            blockHtml += `<div onclick="buySeat('${seatId}')" class="seat ${seatClass}" title="${isTaken ? 'Gebucht von: ' + takenBy : 'Platz ' + seatId + ' buchen'}">${r}${s}</div>`;
-          }
-        }
-        blockHtml += `</div></div>`;
-        topContainer.innerHTML += blockHtml;
-      });
-
-      // 2. Untere Tribüne (Blöcke J - O)
-      const bottomBlocks = ['J', 'K', 'L', 'M', 'N', 'O'];
-      const bottomContainer = document.getElementById('grid-bottom-tribune');
-      bottomContainer.innerHTML = '';
-
-      bottomBlocks.forEach(block => {
-        let blockHtml = `<div class="bg-slate-950 p-2 rounded-lg border border-slate-800 text-center"><div class="text-xs font-black text-sky-400 mb-1.5">Block ${block}</div><div class="grid grid-cols-3 gap-1">`;
-        for(let r = 1; r <= 3; r++) {
-          for(let s = 1; s <= 3; s++) {
-            const seatId = `${block}-${r}${s}`;
-            const booking = getBooking(seatId);
-            const isTaken = !!booking;
-            const takenBy = booking ? booking.player : '';
-            const isMySeat = currentUser && takenBy === currentUser.ingame_name;
-
-            let seatClass = isTaken ? 'seat-taken' : 'seat-free';
-            if(isMySeat) seatClass = 'bg-indigo-600 text-white font-black ring-2 ring-white';
-
-            blockHtml += `<div onclick="buySeat('${seatId}')" class="seat ${seatClass}" title="${isTaken ? 'Gebucht von: ' + takenBy : 'Platz ' + seatId + ' buchen'}">${r}${s}</div>`;
-          }
-        }
-        blockHtml += `</div></div>`;
-        bottomContainer.innerHTML += blockHtml;
-      });
     }
 
-    // HELPER FÜR BUCHUNGS-FORMAT (ABWÄRTSKOMPATIBEL)
-    function getBooking(seatId) {
-      const b = bookedSeats[seatId];
-      if(!b) return null;
-      if(typeof b === 'string') return { player: b, delivered: false };
-      return b;
-    }
-
-    // SITZPLATZ KAUFEN / STORNIEREN
-    function buySeat(seatId) {
+    // TICKET KAUFEN / STORNIEREN
+    function buyTicket(type) {
       if(!currentUser) {
         alert("Bitte melde dich an, um ein Ticket für das Turnier zu buchen!");
         openAuthModal(true);
         return;
       }
 
-      const booking = getBooking(seatId);
-
-      if(booking) {
-        if(booking.player === currentUser.ingame_name) {
-          if(confirm(`Möchtest du deine Reservierung für Sitzplatz ${seatId} stornieren?`)) {
-            delete bookedSeats[seatId];
-            localStorage.setItem('tm_booked_seats', JSON.stringify(bookedSeats));
-            renderStadium();
-            loadDashboard();
-            if(currentUser.role === 'admin') loadAdminPanel();
-          }
-        } else {
-          alert(`Dieser Sitzplatz ist bereits von ${booking.player} reserviert.`);
-        }
+      const existingTicket = userTickets.find(t => t.player === currentUser.ingame_name);
+      if(existingTicket) {
+        alert(`Du besitzt bereits ein ${existingTicket.type}-Ticket! (Maximal 1 Ticket pro Spieler).`);
         return;
       }
 
-      if(confirm(`Möchtest du Platz ${seatId} für ${tournamentData.name} verbindlich reservieren?`)) {
-        bookedSeats[seatId] = { player: currentUser.ingame_name, delivered: false };
-        localStorage.setItem('tm_booked_seats', JSON.stringify(bookedSeats));
-        alert(`Erfolgreich gebucht! Dein Sitzplatz: ${seatId}`);
+      // Prüfe Kontingent
+      const currentCount = userTickets.filter(t => t.type === type).length;
+      const maxCount = type === 'VIP' ? MAX_VIP_TICKETS : MAX_NORMAL_TICKETS;
+
+      if(currentCount >= maxCount) {
+        alert(`Leider sind alle ${type}-Tickets ausverkauft!`);
+        return;
+      }
+
+      if(confirm(`Möchtest du verbindlich 1x ${type}-Ticket für ${tournamentData.name} reservieren?`)) {
+        userTickets.push({ player: currentUser.ingame_name, type: type, delivered: false });
+        localStorage.setItem('tm_user_tickets', JSON.stringify(userTickets));
+        alert(`Erfolgreich gebucht! Du hast ein ${type}-Ticket reserviert.`);
         renderStadium();
         loadDashboard();
         if(currentUser.role === 'admin') loadAdminPanel();
+      }
+    }
+
+    function cancelTicket(index) {
+      if(confirm("Möchtest du dieses Ticket wirklich stornieren?")) {
+        userTickets.splice(index, 1);
+        localStorage.setItem('tm_user_tickets', JSON.stringify(userTickets));
+        renderStadium();
+        loadDashboard();
+        if(currentUser && currentUser.role === 'admin') loadAdminPanel();
       }
     }
 
@@ -510,14 +456,10 @@
       updateAdminUI();
     }
 
-    function toggleTicketDelivery(seatId) {
-      const booking = getBooking(seatId);
-      if(!booking) return;
-
-      booking.delivered = !booking.delivered;
-      bookedSeats[seatId] = booking;
-      localStorage.setItem('tm_booked_seats', JSON.stringify(bookedSeats));
-      
+    function toggleTicketDelivery(index) {
+      if(!userTickets[index]) return;
+      userTickets[index].delivered = !userTickets[index].delivered;
+      localStorage.setItem('tm_user_tickets', JSON.stringify(userTickets));
       loadAdminPanel();
       loadDashboard();
     }
@@ -630,26 +572,23 @@
       // 2. Ticket-Bestellungsanzeige für Admins
       const ticketTbody = document.getElementById('admin-tickets-table');
       ticketTbody.innerHTML = '';
-      const seatKeys = Object.keys(bookedSeats);
       
-      if(seatKeys.length === 0) {
+      if(userTickets.length === 0) {
         ticketTbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Noch keine Ticket-Buchungen vorhanden.</td></tr>`;
       } else {
-        seatKeys.forEach(seatId => {
-          const booking = getBooking(seatId);
-          const isDelivered = booking.delivered;
-
+        userTickets.forEach((t, idx) => {
+          const isDelivered = t.delivered;
           ticketTbody.innerHTML += `
             <tr class="border-b border-slate-800/50">
-              <td class="p-3 font-bold text-indigo-400">${seatId}</td>
-              <td class="p-3 font-semibold text-slate-200">${booking.player}</td>
+              <td class="p-3 font-semibold text-slate-200">${t.player}</td>
+              <td class="p-3 font-bold ${t.type === 'VIP' ? 'text-amber-400' : 'text-indigo-400'}">${t.type}</td>
               <td class="p-3">
                 ${isDelivered 
-                  ? `<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg inline-flex items-center gap-1">✓ Geliefert</span>`
+                  ? `<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg inline-flex items-center gap-1">✓ Übergeben</span>`
                   : `<span class="bg-amber-950 text-amber-400 border border-amber-800 text-xs font-bold px-2.5 py-1 rounded-lg inline-flex items-center gap-1">⏳ Offen</span>`}
               </td>
               <td class="p-3 text-right">
-                <button onclick="toggleTicketDelivery('${seatId}')" class="${isDelivered ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-emerald-600 hover:bg-emerald-500 text-white'} font-bold text-xs px-3 py-1.5 rounded-lg transition">
+                <button onclick="toggleTicketDelivery(${idx})" class="${isDelivered ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-emerald-600 hover:bg-emerald-500 text-white'} font-bold text-xs px-3 py-1.5 rounded-lg transition">
                   ${isDelivered ? 'Als offen markieren' : '✓ Als geliefert markieren'}
                 </button>
               </td>
@@ -684,25 +623,22 @@
       // Tickets im Dashboard des Spielers anzeigen
       const ticketList = document.getElementById('my-tickets-list');
       ticketList.innerHTML = '';
-      let hasTicket = false;
-      Object.keys(bookedSeats).forEach(seatId => {
-        const booking = getBooking(seatId);
-        if(booking && booking.player === currentUser.ingame_name) {
-          hasTicket = true;
-          ticketList.innerHTML += `
-            <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
-              <div>
-                <b class="text-white">${tournamentData.name}</b><br>
-                <span class="text-slate-400">Platz: ${seatId}</span>
-                <span class="ml-2 ${booking.delivered ? 'text-emerald-400' : 'text-amber-400'}">
-                  (${booking.delivered ? '✓ Im Ingame-Inventar' : '⏳ Ausstehende Übergabe'})
-                </span>
-              </div>
-              <button onclick="buySeat('${seatId}')" class="text-rose-400 hover:underline">Stornieren</button>
-            </div>`;
-        }
-      });
-      if(!hasTicket) {
+      let myIndex = userTickets.findIndex(t => t.player === currentUser.ingame_name);
+
+      if(myIndex !== -1) {
+        const ticket = userTickets[myIndex];
+        ticketList.innerHTML = `
+          <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+            <div>
+              <b class="text-white">${tournamentData.name}</b><br>
+              <span class="${ticket.type === 'VIP' ? 'text-amber-400' : 'text-indigo-400'} font-bold">${ticket.type}-Ticket</span>
+              <span class="ml-2 ${ticket.delivered ? 'text-emerald-400' : 'text-amber-400'}">
+                (${ticket.delivered ? '✓ Im Ingame-Inventar' : '⏳ Ausstehende Übergabe'})
+              </span>
+            </div>
+            <button onclick="cancelTicket(${myIndex})" class="text-rose-400 hover:underline">Stornieren</button>
+          </div>`;
+      } else {
         ticketList.innerHTML = `<p class="text-slate-500 text-xs">Keine Tickets gebucht.</p>`;
       }
     }
