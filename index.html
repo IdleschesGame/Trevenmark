@@ -6,10 +6,10 @@
   <title>Trevenmark – Stadt der Kultur</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Newsreader (Klassischer, handgemachter Look) -->
+  <!-- Google Fonts: Playfair Display & Inter für den echten Magazin-Look -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -18,15 +18,16 @@
       theme: {
         extend: {
           fontFamily: {
-            serif: ['Newsreader', 'Georgia', 'serif'],
-            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Inter', 'sans-serif'],
           },
           colors: {
             brand: {
-              navy: '#122342',
-              navyDark: '#08101e',
-              gold: '#c59b27',
-              goldLight: '#e2be52'
+              navy: '#0d1b2a',
+              gold: '#c69214',
+              goldLight: '#e9b533',
+              paper: '#f9f6f0',
+              paperDark: '#12161f'
             }
           }
         }
@@ -34,39 +35,39 @@
     }
   </script>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    h1, h2, h3, .serif-title { font-family: 'Newsreader', Georgia, serif; }
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, .newspaper-title { font-family: 'Playfair Display', Georgia, serif; }
   </style>
 </head>
-<body class="bg-[#fcfbf9] dark:bg-[#0a0e14] text-slate-800 dark:text-slate-200 min-h-screen flex flex-col transition-colors duration-300 selection:bg-amber-500/20">
+<body class="bg-[#f7f4ed] dark:bg-[#0c0f17] text-[#22252a] dark:text-[#e2e8f0] min-h-screen flex flex-col transition-colors duration-300">
 
-  <!-- HEADER -->
-  <header class="border-b border-amber-900/10 dark:border-amber-500/20 bg-[#fcfbf9]/90 dark:bg-[#0a0e14]/90 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+  <!-- SEITEN-KOPF (ZEITUNGS- / MAGAZIN-STIL) -->
+  <header class="border-b-2 border-[#12233f] dark:border-amber-500/40 bg-[#fefcf8] dark:bg-[#10141d] sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
       
-      <!-- LOGO -->
+      <!-- LOGO / TITEL -->
       <div class="flex items-center gap-4">
-        <img id="logo-img" src="./logo.png" alt="Trevenmark Logo" class="h-9 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
-        <span id="fallback-logo" class="text-xl hidden">🏛️</span>
+        <img id="logo-img" src="./logo.png" alt="Trevenmark Logo" class="h-12 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block';">
+        <span id="fallback-logo" class="text-3xl hidden">🏛️</span>
         <div>
-          <span class="text-xl tracking-wide font-bold text-slate-900 dark:text-white serif-title block leading-none">TREVENMARK</span>
-          <span class="text-[10px] tracking-widest text-amber-700 dark:text-amber-400 font-semibold uppercase mt-1 block">Stadt der Kultur</span>
+          <h1 class="text-2xl md:text-3xl font-black tracking-wide text-[#12233f] dark:text-amber-400 newspaper-title uppercase">Trevenmark</h1>
+          <p class="text-[10px] font-bold tracking-widest text-[#c69214] uppercase">Offizielles Stadt- & Kulturportal</p>
         </div>
       </div>
 
       <!-- NAVIGATION -->
-      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-        <button onclick="switchTab('tourism')" class="nav-btn text-amber-700 dark:text-amber-400 transition" data-target="page-tourism">U-Bahn & Tourismus</button>
-        <button onclick="switchTab('stadium')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" data-target="page-stadium">Veranstaltungen</button>
-        <button onclick="switchTab('build')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" data-target="page-build">Bauplan</button>
-        <button onclick="switchTab('todos')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" data-target="page-todos">Aufgaben</button>
-        <button onclick="switchTab('dashboard')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" data-target="page-dashboard">Mein Bereich</button>
-        <button id="admin-nav-btn" onclick="switchAdminSub('stadium'); switchTab('admin')" class="nav-btn text-amber-800 dark:text-amber-400 font-semibold transition hidden" data-target="page-admin">Admin</button>
+      <nav class="flex flex-wrap justify-center gap-6 text-xs md:text-sm font-semibold uppercase tracking-wider">
+        <button onclick="switchTab('tourism')" class="nav-btn text-[#c69214] dark:text-amber-400 border-b-2 border-[#c69214] pb-1 transition" data-target="page-tourism">U-Bahn & Tourismus</button>
+        <button onclick="switchTab('stadium')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-[#12233f] dark:hover:text-amber-300 pb-1 transition" data-target="page-stadium">Veranstaltungen</button>
+        <button onclick="switchTab('build')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-[#12233f] dark:hover:text-amber-300 pb-1 transition" data-target="page-build">Bauplan</button>
+        <button onclick="switchTab('todos')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-[#12233f] dark:hover:text-amber-300 pb-1 transition" data-target="page-todos">Aufgaben</button>
+        <button onclick="switchTab('dashboard')" class="nav-btn text-slate-600 dark:text-slate-400 hover:text-[#12233f] dark:hover:text-amber-300 pb-1 transition" data-target="page-dashboard">Mein Bereich</button>
+        <button id="admin-nav-btn" onclick="switchAdminSub('stadium'); switchTab('admin')" class="nav-btn text-amber-700 dark:text-amber-500 hover:underline pb-1 transition hidden" data-target="page-admin">Admin</button>
       </nav>
 
-      <!-- RECHTS: TOOLS -->
-      <div class="flex items-center gap-4">
-        <button onclick="toggleDarkMode()" class="text-sm px-3 py-1.5 rounded border border-slate-300 dark:border-slate-800 hover:border-amber-500 transition" title="Modus wechseln">
+      <!-- EXTRAS (THEME & LOGIN) -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleDarkMode()" class="p-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#161c27] text-xs font-bold rounded" title="Design umschalten">
           <span id="theme-icon">🌙</span>
         </button>
         <div id="auth-section"></div>
@@ -74,36 +75,41 @@
     </div>
   </header>
 
-  <!-- MAIN -->
-  <main class="flex-grow max-w-6xl w-full mx-auto px-6 py-10">
+  <!-- HAUPTINHALT -->
+  <main class="flex-grow max-w-6xl w-full mx-auto px-6 py-10 space-y-12">
 
-    <!-- PAGE: TOURISMUS -->
-    <section id="page-tourism" class="page-content space-y-12">
-      <div class="max-w-3xl space-y-4">
-        <h2 class="text-4xl md:text-5xl font-normal text-slate-900 dark:text-white tracking-tight leading-tight">Unsere U-Bahn</h2>
-        <p class="text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed">
+    <!-- SEITE: TOURISMUS & U-BAHN -->
+    <section id="page-tourism" class="page-content space-y-10">
+      
+      <!-- EINLEITUNG IM EDITORIAL-STIL -->
+      <div class="bg-white dark:bg-[#12161f] border-l-4 border-[#c69214] p-8 shadow-sm space-y-4">
+        <h2 class="text-3xl md:text-4xl font-black text-[#12233f] dark:text-white newspaper-title">Unsere U-Bahn</h2>
+        <p class="text-base text-slate-700 dark:text-slate-300 leading-relaxed font-serif">
           Herzlich willkommen in Trevenmark!<br><br>
           Unsere U-Bahn bringt Sie schnell und bequem von A nach B: Die Ringlinien U1 und U2 verbinden die wichtigsten Sehenswürdigkeiten und Attraktionen im Stadtzentrum.
         </p>
       </div>
 
-      <!-- BAHNPLAN BILD -->
-      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-4 md:p-6 rounded-none">
-        <div class="text-xs uppercase tracking-wider text-amber-700 dark:text-amber-400 mb-4 font-semibold">Liniennetz & Ringplan</div>
-        <div class="flex justify-center bg-slate-50 dark:bg-[#080e14] p-4 border border-slate-100 dark:border-slate-800/60">
-          <img id="bahnplan-img" src="./Bahnplan.png" alt="Bahnplan Trevenmark" class="max-h-[550px] w-auto object-contain" onerror="this.style.display='none'; document.getElementById('bahnplan-fallback').style.display='block';">
+      <!-- BAHNPLAN KARTE -->
+      <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h3 class="font-bold text-sm tracking-wider uppercase text-[#c69214]">Liniennetz & Ringplan</h3>
+          <span class="text-xs text-slate-400">Offizieller Stadtplan</span>
         </div>
-        <div id="bahnplan-fallback" class="hidden py-16 text-center space-y-2">
-          <p class="text-sm font-medium text-slate-700 dark:text-slate-300">`Bahnplan.png` wurde im Ordner nicht gefunden.</p>
-          <p class="text-xs text-slate-500">Bitte lege die Datei als <code class="text-amber-600">Bahnplan.png</code> ab.</p>
+        <div class="flex justify-center bg-[#f2efe9] dark:bg-[#080b11] p-4 border border-slate-200 dark:border-slate-800">
+          <img id="bahnplan-img" src="./Bahnplan.png" alt="Bahnplan Trevenmark" class="max-h-[500px] w-auto object-contain" onerror="this.style.display='none'; document.getElementById('bahnplan-fallback').style.display='block';">
+        </div>
+        <div id="bahnplan-fallback" class="hidden py-12 text-center space-y-2">
+          <p class="text-sm font-bold text-slate-700 dark:text-slate-300">Keine `Bahnplan.png` Datei gefunden.</p>
+          <p class="text-xs text-slate-500">Bitte lege das Bild unter dem Namen <code class="text-[#c69214] font-bold">Bahnplan.png</code> in deinen Projektordner.</p>
         </div>
       </div>
 
-      <!-- BLOG BEREICH -->
-      <div class="space-y-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+      <!-- BLOG / CHRONIK -->
+      <div class="space-y-6 pt-6 border-t border-slate-300 dark:border-slate-800">
         <div class="flex justify-between items-baseline">
-          <h3 class="text-2xl text-slate-900 dark:text-white font-normal">Chronik & Neuigkeiten</h3>
-          <span class="text-xs text-slate-400 tracking-wider uppercase">Aus dem Stadtarchiv</span>
+          <h3 class="text-2xl font-bold text-[#12233f] dark:text-white newspaper-title">Stadtchronik & Blog</h3>
+          <span class="text-xs uppercase font-semibold text-slate-500">Aktuelle Berichte</span>
         </div>
         <div id="blog-posts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <!-- Dynamische Beiträge -->
@@ -111,54 +117,54 @@
       </div>
     </section>
 
-    <!-- PAGE: VERANSTALTUNGEN / ARENA -->
+    <!-- SEITE: VERANSTALTUNGEN & ARENA -->
     <section id="page-stadium" class="page-content space-y-8 hidden">
-      <div class="border-b border-slate-200 dark:border-slate-800 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+      <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h2 class="text-4xl text-slate-900 dark:text-white font-normal">Veranstaltungen & Arena</h2>
-          <p id="tournament-info-text" class="text-sm text-slate-500 mt-1">Lade Veranstaltungsdaten...</p>
+          <h2 class="text-3xl font-black text-[#12233f] dark:text-white newspaper-title">Veranstaltungen & Arena</h2>
+          <p id="tournament-info-text" class="text-xs text-slate-500 mt-1">Lade Veranstaltungsdaten...</p>
         </div>
-        <div id="my-ticket-badge" class="hidden text-xs border border-amber-500/40 px-3 py-1.5 text-amber-700 dark:text-amber-400 font-medium">
-          Status: <span id="my-ticket-type" class="font-bold">Kein Ticket</span>
+        <div id="my-ticket-badge" class="hidden bg-amber-500/10 border border-[#c69214] px-4 py-2 text-xs font-bold text-[#c69214]">
+          Dein Status: <span id="my-ticket-type">Kein Ticket</span>
         </div>
       </div>
 
-      <div id="stadium-locked-msg" class="border border-slate-200 dark:border-slate-800 p-12 text-center space-y-3 bg-white dark:bg-[#11161d]">
-        <h3 class="text-xl font-normal text-slate-800 dark:text-slate-200">Der Vorverkauf ist derzeit geschlossen</h3>
-        <p class="text-sm text-slate-500 max-w-md mx-auto">Es findet aktuell keine aktive Veranstaltung statt oder der Saalplan wurde von der Administration noch nicht freigegeben.</p>
+      <div id="stadium-locked-msg" class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-12 text-center space-y-3 shadow-sm">
+        <span class="text-4xl">🔒</span>
+        <h3 class="text-xl font-bold text-slate-800 dark:text-slate-200">Der Ticketverkauf ist zur Zeit geschlossen</h3>
+        <p class="text-xs text-slate-500 max-w-md mx-auto">Es findet aktuell keine angekündigte Veranstaltung statt oder der Saalplan wurde von der Administration noch nicht freigegeben.</p>
       </div>
 
-      <div id="stadium-interactive" class="space-y-8 hidden">
-        <div class="flex justify-between items-center p-4 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d]">
+      <div id="stadium-interactive" class="space-y-6 hidden">
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm flex justify-between items-center">
           <div>
-            <h4 class="text-sm font-semibold text-slate-900 dark:text-white">Zuschauerkarte</h4>
-            <p class="text-xs text-slate-500 mt-0.5">Verfügbare Sitzplätze: <span id="count-normal-free" class="text-amber-700 dark:text-amber-400 font-bold">0</span> / <span id="count-normal-total">0</span></p>
+            <h4 class="font-bold text-sm text-[#12233f] dark:text-white">Zuschauer-Ticket</h4>
+            <p class="text-xs text-slate-500">Verfügbare Plätze: <span id="count-normal-free" class="font-bold text-[#c69214]">0</span> / <span id="count-normal-total">0</span></p>
           </div>
-          <button onclick="buyTicket()" class="bg-slate-900 dark:bg-amber-600 text-white text-xs font-semibold px-5 py-2.5 hover:bg-slate-800 dark:hover:bg-amber-500 transition">
+          <button onclick="buyTicket()" class="bg-[#12233f] hover:bg-[#1d3557] dark:bg-[#c69214] dark:hover:bg-[#d9a31a] text-white text-xs font-bold px-6 py-3 transition shadow">
             Ticket reservieren
           </button>
         </div>
 
-        <!-- SAALPLAN GRAFIK -->
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-8 space-y-6">
-          <div class="text-center text-xs tracking-widest text-slate-400 uppercase">Saalplan Übersicht</div>
-          
-          <div class="max-w-2xl mx-auto space-y-4">
-            <div class="border border-dashed border-slate-300 dark:border-slate-700 p-2 text-center text-xs text-slate-500">
-              Veranstaltungsleitung & Schiris (Gesperrter Bereich)
+        <!-- SAALPLAN SCHEMA -->
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-8 shadow-sm space-y-4">
+          <div class="text-center text-xs font-bold uppercase tracking-widest text-slate-400">Saalplan & Tribünen</div>
+          <div class="max-w-2xl mx-auto space-y-3">
+            <div class="border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-[#161c27] p-2 text-center text-xs text-slate-600 dark:text-slate-400 font-semibold">
+              Veranstaltungsleitung & Schiris (Gesperrt)
             </div>
-            <div class="grid grid-cols-12 gap-2 text-center text-xs">
-              <div class="col-span-2 border border-slate-200 dark:border-slate-800 flex items-center justify-center p-4 text-slate-400">West</div>
+            <div class="grid grid-cols-12 gap-2 text-center text-xs font-bold">
+              <div class="col-span-2 border border-slate-300 dark:border-slate-700 flex items-center justify-center p-4 text-slate-400">West</div>
               <div class="col-span-8 space-y-2">
-                <div class="border border-slate-200 dark:border-slate-800 py-2 text-slate-700 dark:text-slate-300 font-medium">Tribüne Nord</div>
-                <div class="h-28 border border-emerald-500/30 bg-emerald-50/20 dark:bg-emerald-950/10 flex items-center justify-center text-emerald-800 dark:text-emerald-400 font-medium text-xs tracking-wider">
-                  Spielfeld / Arena-Mitte
+                <div class="border border-slate-300 dark:border-slate-700 py-2 text-slate-700 dark:text-slate-300">Tribüne Nord</div>
+                <div class="h-28 border border-emerald-600/40 bg-emerald-500/5 flex items-center justify-center text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
+                  Spielfeld / Arena
                 </div>
-                <div class="border border-slate-200 dark:border-slate-800 py-2 text-slate-700 dark:text-slate-300 font-medium">Tribüne Süd</div>
+                <div class="border border-slate-300 dark:border-slate-700 py-2 text-slate-700 dark:text-slate-300">Tribüne Süd</div>
               </div>
-              <div class="col-span-2 border border-slate-200 dark:border-slate-800 flex items-center justify-center p-4 text-slate-400">Ost</div>
+              <div class="col-span-2 border border-slate-300 dark:border-slate-700 flex items-center justify-center p-4 text-slate-400">Ost</div>
             </div>
-            <div class="border border-amber-500/30 bg-amber-500/5 p-2 text-center text-xs text-amber-700 dark:text-amber-400 font-medium">
+            <div class="border border-[#c69214] bg-amber-500/5 p-2 text-center text-xs text-[#c69214] font-bold uppercase">
               VIP-Bereich (Nur auf Einladung)
             </div>
           </div>
@@ -166,98 +172,99 @@
       </div>
     </section>
 
-    <!-- PAGE: BAUPLAN -->
+    <!-- SEITE: BAUPLAN -->
     <section id="page-build" class="page-content space-y-8 hidden">
-      <div class="border-b border-slate-200 dark:border-slate-800 pb-6">
-        <h2 class="text-4xl text-slate-900 dark:text-white font-normal">Bau- & Masterplan</h2>
-        <p class="text-sm text-slate-500 mt-1">Offizielle Planungen für die Weiterentwicklung der Stadt.</p>
+      <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm">
+        <h2 class="text-3xl font-black text-[#12233f] dark:text-white newspaper-title">Bau- & Masterplan</h2>
+        <p class="text-xs text-slate-500 mt-1">Offizielle Planungen für die Weiterentwicklung unserer Stadt.</p>
       </div>
 
-      <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-8 text-center">
+      <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-8 text-center shadow-sm">
         <div id="blueprint-placeholder" class="py-16 space-y-3">
-          <p class="text-sm font-medium text-slate-700 dark:text-slate-300">Der Bauplan wurde noch nicht eingereicht.</p>
-          <p class="text-xs text-slate-500">Administratoren können eine Datei über das Admin-Panel hochladen oder <code class="text-amber-600">bauplan.png</code> hinterlegen.</p>
+          <span class="text-4xl">📐</span>
+          <h3 class="text-base font-bold text-slate-700 dark:text-slate-300">Noch kein Bauplan hochgeladen</h3>
+          <p class="text-xs text-slate-500 max-w-md mx-auto">Administratoren können einen Bauplan über das Admin-Panel hochladen oder eine Datei namens <code class="text-[#c69214]">bauplan.png</code> im Ordner hinterlegen.</p>
         </div>
-        <img id="blueprint-img" src="" alt="Trevenmark Bauplan" class="max-h-[600px] mx-auto hidden border border-slate-200 dark:border-slate-800">
+        <img id="blueprint-img" src="" alt="Trevenmark Bauplan" class="max-h-[600px] mx-auto hidden border border-slate-300 dark:border-slate-700 shadow">
       </div>
     </section>
 
-    <!-- PAGE: AUFGABEN -->
+    <!-- SEITE: AUFGABEN -->
     <section id="page-todos" class="page-content space-y-8 hidden">
-      <div class="border-b border-slate-200 dark:border-slate-800 pb-6 flex justify-between items-end">
+      <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm flex justify-between items-center">
         <div>
-          <h2 class="text-4xl text-slate-900 dark:text-white font-normal">Aufgaben & Projekte</h2>
-          <p class="text-sm text-slate-500 mt-1">Aktuelle städtische Aufgaben (max. 3 aktive Aufgaben gleichzeitig pro Person).</p>
+          <h2 class="text-3xl font-black text-[#12233f] dark:text-white newspaper-title">Aufgaben & Projekte</h2>
+          <p class="text-xs text-slate-500 mt-1">Städtische To-Dos (max. 3 aktive Aufgaben gleichzeitig pro Person).</p>
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="todos-grid"></div>
     </section>
 
-    <!-- PAGE: DASHBOARD -->
+    <!-- SEITE: DASHBOARD -->
     <section id="page-dashboard" class="page-content space-y-8 hidden">
-      <div class="border-b border-slate-200 dark:border-slate-800 pb-6">
-        <h2 class="text-4xl text-slate-900 dark:text-white font-normal">Mein Bereich</h2>
-        <p class="text-sm text-slate-500 mt-1">Übersicht deiner persönlichen Buchungen und Aufgaben.</p>
+      <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm">
+        <h2 class="text-3xl font-black text-[#12233f] dark:text-white newspaper-title">Mein Bereich</h2>
+        <p class="text-xs text-slate-500 mt-1">Deine persönlichen Statistiken, Buchungen und Aufgaben.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Aktive Aufgaben (<span id="my-active-count">0</span>/3)</h3>
-          <div id="my-todos-list" class="space-y-2 text-sm"></div>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-3">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Aktive Aufgaben (<span id="my-active-count">0</span>/3)</h3>
+          <div id="my-todos-list" class="space-y-2 text-xs"></div>
         </div>
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Meine Tickets</h3>
-          <div id="my-tickets-list" class="space-y-2 text-sm"></div>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-3">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Meine Tickets</h3>
+          <div id="my-tickets-list" class="space-y-2 text-xs"></div>
         </div>
       </div>
     </section>
 
-    <!-- PAGE: ADMIN -->
+    <!-- SEITE: ADMIN PANEL -->
     <section id="page-admin" class="page-content space-y-8 hidden">
-      <div class="border-b border-slate-200 dark:border-slate-800 pb-6">
-        <h2 class="text-4xl text-slate-900 dark:text-white font-normal">Administration</h2>
-        <p class="text-sm text-slate-500 mt-1">Verwaltung von Veranstaltungen, Blogbeiträgen und Bürgern.</p>
+      <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm">
+        <h2 class="text-3xl font-black text-[#12233f] dark:text-white newspaper-title">Admin-Verwaltung</h2>
+        <p class="text-xs text-slate-500 mt-1">Steuerung von Veranstaltungen, Blog, Bürgern und Bauplan.</p>
       </div>
 
-      <div class="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-4 text-xs font-semibold">
-        <button onclick="switchAdminSub('stadium')" id="admin-btn-stadium" class="admin-sub-btn px-4 py-2 border border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-400">Veranstaltungen</button>
-        <button onclick="switchAdminSub('blog')" id="admin-btn-blog" class="admin-sub-btn px-4 py-2 border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400">Blog</button>
-        <button onclick="switchAdminSub('build')" id="admin-btn-build" class="admin-sub-btn px-4 py-2 border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400">Bauplan</button>
-        <button onclick="switchAdminSub('users')" id="admin-btn-users" class="admin-sub-btn px-4 py-2 border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400">Bürger</button>
-        <button onclick="switchAdminSub('todos')" id="admin-btn-todos" class="admin-sub-btn px-4 py-2 border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400">Aufgaben</button>
+      <div class="flex flex-wrap gap-2 border-b border-slate-300 dark:border-slate-800 pb-4 text-xs font-bold uppercase tracking-wider">
+        <button onclick="switchAdminSub('stadium')" id="admin-btn-stadium" class="admin-sub-btn px-4 py-2 bg-[#12233f] text-white dark:bg-[#c69214] dark:text-slate-950 transition">Veranstaltungen</button>
+        <button onclick="switchAdminSub('blog')" id="admin-btn-blog" class="admin-sub-btn px-4 py-2 bg-white dark:bg-[#161c27] border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition">Blog</button>
+        <button onclick="switchAdminSub('build')" id="admin-btn-build" class="admin-sub-btn px-4 py-2 bg-white dark:bg-[#161c27] border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition">Bauplan</button>
+        <button onclick="switchAdminSub('users')" id="admin-btn-users" class="admin-sub-btn px-4 py-2 bg-white dark:bg-[#161c27] border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition">Bürger</button>
+        <button onclick="switchAdminSub('todos')" id="admin-btn-todos" class="admin-sub-btn px-4 py-2 bg-white dark:bg-[#161c27] border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition">Aufgaben</button>
       </div>
 
-      <!-- ADMIN SUB: VERANSTALTUNGEN -->
+      <!-- ADMIN: VERANSTALTUNGEN -->
       <div id="admin-sub-stadium" class="admin-sub-content space-y-6">
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Veranstaltungs-Einstellungen</h3>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Veranstaltungs-Einstellungen</h3>
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
             <div>
-              <label class="block text-slate-500 mb-1">Name</label>
-              <input type="text" id="admin-tournament-name" class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+              <label class="block text-slate-500 mb-1 font-semibold">Titel</label>
+              <input type="text" id="admin-tournament-name" class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2">
             </div>
             <div>
-              <label class="block text-slate-500 mb-1">Datum & Zeit</label>
-              <input type="datetime-local" id="admin-tournament-date" class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+              <label class="block text-slate-500 mb-1 font-semibold">Datum & Zeit</label>
+              <input type="datetime-local" id="admin-tournament-date" class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2">
             </div>
             <div>
-              <label class="block text-slate-500 mb-1">Max. Sitzplätze</label>
-              <input type="number" id="admin-tournament-seats" class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+              <label class="block text-slate-500 mb-1 font-semibold">Max. Plätze</label>
+              <input type="number" id="admin-tournament-seats" class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2">
             </div>
             <div class="flex items-end">
-              <button onclick="saveTournamentSettings()" class="w-full bg-slate-900 dark:bg-amber-600 text-white font-medium py-2 hover:bg-slate-800 transition">Speichern</button>
+              <button onclick="saveTournamentSettings()" class="w-full bg-[#12233f] text-white font-bold p-2.5 transition">Speichern</button>
             </div>
           </div>
-          <div class="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
-            <span class="text-slate-600 dark:text-slate-400">Status des Ticketverkaufs:</span>
-            <button id="admin-toggle-ticket-btn" onclick="toggleTicketSale()" class="px-4 py-2 bg-emerald-700 text-white font-semibold">Saalplan freischalten</button>
+          <div class="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-slate-800 text-xs">
+            <span class="font-semibold text-slate-700 dark:text-slate-300">Ticketverkauf Status:</span>
+            <button id="admin-toggle-ticket-btn" onclick="toggleTicketSale()" class="px-4 py-2 bg-emerald-700 text-white font-bold">Saalplan freischalten</button>
           </div>
         </div>
 
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Gebuchte Tickets</h3>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Gebuchte Tickets</h3>
           <table class="w-full text-left text-xs">
-            <thead class="border-b border-slate-200 dark:border-slate-800 text-slate-500">
+            <thead class="border-b border-slate-200 dark:border-slate-800 text-slate-400">
               <tr>
                 <th class="pb-3">Ingame Name</th>
                 <th class="pb-3">Status</th>
@@ -269,50 +276,50 @@
         </div>
       </div>
 
-      <!-- ADMIN SUB: BLOG -->
+      <!-- ADMIN: BLOG -->
       <div id="admin-sub-blog" class="admin-sub-content space-y-6 hidden">
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4 max-w-xl">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Neuen Blogeintrag verfassen</h3>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4 max-w-xl">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Neuen Blogeintrag erstellen</h3>
           <form onsubmit="handleCreateBlogPost(event)" class="space-y-4 text-xs">
             <div>
-              <label class="block text-slate-500 mb-1">Titel</label>
-              <input type="text" id="blog-title-input" required class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+              <label class="block text-slate-500 mb-1 font-semibold">Titel</label>
+              <input type="text" id="blog-title-input" required class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2">
             </div>
             <div>
-              <label class="block text-slate-500 mb-1">Bild (Datei oder URL)</label>
+              <label class="block text-slate-500 mb-1 font-semibold">Bild (Datei oder URL)</label>
               <input type="file" id="blog-file-input" accept="image/*" class="w-full mb-2">
-              <input type="text" id="blog-img-url" placeholder="Oder Bild-URL" class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+              <input type="text" id="blog-img-url" placeholder="Oder Bild-URL" class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2">
             </div>
             <div>
-              <label class="block text-slate-500 mb-1">Inhalt</label>
-              <textarea id="blog-content-input" rows="4" required class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2"></textarea>
+              <label class="block text-slate-500 mb-1 font-semibold">Text</label>
+              <textarea id="blog-content-input" rows="4" required class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2"></textarea>
             </div>
-            <button type="submit" class="bg-slate-900 dark:bg-amber-600 text-white font-medium px-4 py-2">Veröffentlichen</button>
+            <button type="submit" class="bg-[#12233f] text-white font-bold px-4 py-2.5">Veröffentlichen</button>
           </form>
         </div>
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Vorhandene Beiträge</h3>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Vorhandene Beiträge</h3>
           <div id="admin-blog-list" class="space-y-2 text-xs"></div>
         </div>
       </div>
 
-      <!-- ADMIN SUB: BAUPLAN -->
+      <!-- ADMIN: BAUPLAN -->
       <div id="admin-sub-build" class="admin-sub-content space-y-6 hidden">
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4 max-w-xl text-xs">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Bauplan aktualisieren</h3>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4 max-w-xl text-xs">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Bauplan hochladen</h3>
           <div class="flex gap-4 items-center">
-            <input type="file" id="blueprint-file-input" accept="image/*" class="text-slate-500">
-            <button onclick="uploadBlueprint()" class="bg-slate-900 dark:bg-amber-600 text-white font-medium px-4 py-2">Hochladen</button>
+            <input type="file" id="blueprint-file-input" accept="image/*">
+            <button onclick="uploadBlueprint()" class="bg-[#12233f] text-white font-bold px-4 py-2">Hochladen</button>
           </div>
         </div>
       </div>
 
-      <!-- ADMIN SUB: BENUTZER -->
+      <!-- ADMIN: BENUTZER -->
       <div id="admin-sub-users" class="admin-sub-content space-y-6 hidden">
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Ausstehende Freigaben</h3>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Ausstehende Freigaben</h3>
           <table class="w-full text-left text-xs">
-            <thead class="border-b border-slate-200 dark:border-slate-800 text-slate-500">
+            <thead class="border-b border-slate-300 dark:border-slate-800 text-slate-400">
               <tr>
                 <th class="pb-3">Name</th>
                 <th class="pb-3">Discord</th>
@@ -324,20 +331,20 @@
         </div>
       </div>
 
-      <!-- ADMIN SUB: AUFGABEN -->
+      <!-- ADMIN: AUFGABEN -->
       <div id="admin-sub-todos" class="admin-sub-content space-y-6 hidden">
-        <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4 max-w-xl">
-          <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">Neue Aufgabe erstellen</h3>
+        <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-4 max-w-xl">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-[#c69214]">Aufgabe erstellen</h3>
           <form onsubmit="handleCreateTodo(event)" class="space-y-4 text-xs">
             <div>
-              <label class="block text-slate-500 mb-1">Titel</label>
-              <input type="text" id="todo-title-input" required class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+              <label class="block text-slate-500 mb-1 font-semibold">Titel</label>
+              <input type="text" id="todo-title-input" required class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2">
             </div>
             <div>
-              <label class="block text-slate-500 mb-1">Beschreibung</label>
-              <textarea id="todo-desc-input" rows="3" required class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2"></textarea>
+              <label class="block text-slate-500 mb-1 font-semibold">Beschreibung</label>
+              <textarea id="todo-desc-input" rows="3" required class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2"></textarea>
             </div>
-            <button type="submit" class="bg-slate-900 dark:bg-amber-600 text-white font-medium px-4 py-2">Erstellen</button>
+            <button type="submit" class="bg-[#12233f] text-white font-bold px-4 py-2.5">Erstellen</button>
           </form>
         </div>
       </div>
@@ -346,25 +353,25 @@
   </main>
 
   <!-- AUTH MODAL -->
-  <div id="auth-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-    <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] w-full max-w-md p-8 space-y-6 relative shadow-2xl">
-      <h3 id="auth-modal-title" class="text-2xl font-normal text-slate-900 dark:text-white">Anmeldung</h3>
+  <div id="auth-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 w-full max-w-md p-8 space-y-6 relative shadow-2xl">
+      <h3 id="auth-modal-title" class="text-2xl font-bold text-[#12233f] dark:text-white newspaper-title">Anmeldung</h3>
       <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4 text-xs">
         <div>
-          <label class="block text-slate-500 mb-1">Minecraft Ingame Name</label>
-          <input type="text" id="ign-input" required class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+          <label class="block text-slate-500 mb-1 font-semibold">Minecraft Ingame Name</label>
+          <input type="text" id="ign-input" required class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2.5">
         </div>
         <div id="discord-field">
-          <label class="block text-slate-500 mb-1">Discord Tag</label>
-          <input type="text" id="discord-input" required class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2" placeholder="Name#0000">
+          <label class="block text-slate-500 mb-1 font-semibold">Discord Tag</label>
+          <input type="text" id="discord-input" required class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2.5" placeholder="Name#0000">
         </div>
         <div>
-          <label class="block text-slate-500 mb-1">Passwort</label>
-          <input type="password" id="pass-input" required class="w-full bg-slate-50 dark:bg-[#080e14] border border-slate-300 dark:border-slate-800 px-3 py-2">
+          <label class="block text-slate-500 mb-1 font-semibold">Passwort</label>
+          <input type="password" id="pass-input" required class="w-full bg-slate-50 dark:bg-[#0c0f17] border border-slate-300 dark:border-slate-700 p-2.5">
         </div>
         <div class="flex justify-between items-center pt-2">
-          <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-amber-700 dark:text-amber-400 hover:underline">Registrieren</button>
-          <button type="submit" class="bg-slate-900 dark:bg-amber-600 text-white font-medium px-5 py-2">Bestätigen</button>
+          <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-[#c69214] font-semibold hover:underline">Registrieren</button>
+          <button type="submit" class="bg-[#12233f] text-white font-bold px-5 py-2.5">Bestätigen</button>
         </div>
       </form>
       <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">✕</button>
@@ -389,7 +396,7 @@
     let userTickets = JSON.parse(localStorage.getItem('tm_user_tickets')) || [];
     let blueprintData = localStorage.getItem('tm_blueprint_image') || "";
     let blogPosts = JSON.parse(localStorage.getItem('tm_blog_posts')) || [
-      { id: 1, title: "Willkommen in Trevenmark", content: "Unser Portal ist online. Entdecken Sie alle Sehenswürdigkeiten unkompliziert über unsere U-Bahn-Linien.", image: "", date: "07.11.2026" }
+      { id: 1, title: "Willkommen in Trevenmark", content: "Unser Portal ist online. Entdecken Sie alle Sehenswürdigkeiten und Attraktionen ganz bequem über unsere U-Bahn.", image: "", date: "07.11.2026" }
     ];
 
     function toggleDarkMode() {
@@ -409,9 +416,14 @@
     function switchTab(tabId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('page-' + tabId).classList.remove('hidden');
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.className = "nav-btn text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition");
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = "nav-btn text-slate-600 dark:text-slate-400 hover:text-[#12233f] dark:hover:text-amber-300 pb-1 transition";
+        btn.classList.remove('text-[#c69214]', 'dark:text-amber-400', 'border-b-2', 'border-[#c69214]');
+      });
       const activeBtn = document.querySelector(`[data-target="page-${tabId}"]`);
-      if(activeBtn) activeBtn.className = "nav-btn text-amber-700 dark:text-amber-400 font-semibold transition";
+      if(activeBtn) {
+        activeBtn.className = "nav-btn text-[#c69214] dark:text-amber-400 border-b-2 border-[#c69214] pb-1 transition";
+      }
       
       if(tabId === 'tourism') renderBlogPosts();
       if(tabId === 'stadium') renderStadium();
@@ -423,9 +435,9 @@
       document.querySelectorAll('.admin-sub-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('admin-sub-' + subId).classList.remove('hidden');
       document.querySelectorAll('.admin-sub-btn').forEach(btn => {
-        btn.className = "admin-sub-btn px-4 py-2 border border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-400";
+        btn.className = "admin-sub-btn px-4 py-2 bg-white dark:bg-[#161c27] border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition";
       });
-      document.getElementById('admin-btn-' + subId).className = "admin-sub-btn px-4 py-2 border border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-400 font-semibold";
+      document.getElementById('admin-btn-' + subId).className = "admin-sub-btn px-4 py-2 bg-[#12233f] text-white dark:bg-[#c69214] dark:text-slate-950 transition font-bold";
       if(subId === 'blog') renderAdminBlogList();
     }
 
@@ -438,10 +450,10 @@
       }
       blogPosts.forEach(post => {
         grid.innerHTML += `
-          <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-4">
-            ${post.image ? `<img src="${post.image}" alt="" class="w-full h-48 object-cover border border-slate-100 dark:border-slate-800">` : ''}
-            <span class="text-[10px] tracking-widest uppercase text-amber-700 dark:text-amber-400 block">${post.date}</span>
-            <h4 class="text-xl font-normal text-slate-900 dark:text-white">${post.title}</h4>
+          <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-3">
+            ${post.image ? `<img src="${post.image}" alt="" class="w-full h-48 object-cover border border-slate-200 dark:border-slate-800">` : ''}
+            <span class="text-[10px] tracking-widest uppercase font-bold text-[#c69214] block">${post.date}</span>
+            <h4 class="text-xl font-bold text-[#12233f] dark:text-white newspaper-title">${post.title}</h4>
             <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">${post.content}</p>
           </div>
         `;
@@ -477,7 +489,7 @@
       const list = document.getElementById('admin-blog-list');
       list.innerHTML = '';
       blogPosts.forEach((p, idx) => {
-        list.innerHTML += `<div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800"><span>${p.title}</span><button onclick="deleteBlogPost(${idx})" class="text-rose-600 hover:underline">Löschen</button></div>`;
+        list.innerHTML += `<div class="flex justify-between items-center py-2 border-b border-slate-200 dark:border-slate-800"><span>${p.title}</span><button onclick="deleteBlogPost(${idx})" class="text-rose-600 font-bold hover:underline">Löschen</button></div>`;
       });
     }
 
@@ -567,10 +579,10 @@
       if(!data || !data.length) { grid.innerHTML = `<p class="text-slate-500 text-xs">Keine Aufgaben.</p>`; return; }
       data.forEach(t => {
         grid.innerHTML += `
-          <div class="border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#11161d] p-6 space-y-2">
-            <h4 class="font-medium text-slate-900 dark:text-white text-sm">${t.title}</h4>
+          <div class="bg-white dark:bg-[#12161f] border border-slate-300 dark:border-slate-800 p-6 shadow-sm space-y-2">
+            <h4 class="font-bold text-[#12233f] dark:text-white text-sm">${t.title}</h4>
             <p class="text-xs text-slate-600 dark:text-slate-400">${t.description}</p>
-            <div class="text-[10px] text-amber-700 dark:text-amber-400 uppercase tracking-wider font-semibold">Status: ${t.status}</div>
+            <div class="text-[10px] text-[#c69214] font-bold uppercase tracking-wider">Status: ${t.status}</div>
           </div>
         `;
       });
@@ -607,7 +619,7 @@
       const btn = document.getElementById('admin-toggle-ticket-btn');
       if(btn) {
         btn.innerText = tournamentData.active ? "Verkauf beenden" : "Saalplan freischalten";
-        btn.className = tournamentData.active ? "px-4 py-2 bg-rose-700 text-white font-semibold" : "px-4 py-2 bg-emerald-700 text-white font-semibold";
+        btn.className = tournamentData.active ? "px-4 py-2 bg-rose-700 text-white font-bold" : "px-4 py-2 bg-emerald-700 text-white font-bold";
       }
       document.getElementById('admin-tournament-name').value = tournamentData.name;
       document.getElementById('admin-tournament-date').value = tournamentData.date;
@@ -656,12 +668,12 @@
       const section = document.getElementById('auth-section');
       const adminBtn = document.getElementById('admin-nav-btn');
       if(currentUser) {
-        section.innerHTML = `<div class="flex items-center gap-3 text-xs"><span class="font-medium">${currentUser.ingame_name}</span><button onclick="logout()" class="text-rose-600 hover:underline">Abmelden</button></div>`;
+        section.innerHTML = `<div class="flex items-center gap-3 text-xs"><span class="font-bold">${currentUser.ingame_name}</span><button onclick="logout()" class="text-rose-600 font-bold hover:underline">Abmelden</button></div>`;
         if(currentUser.role === 'admin') { adminBtn.classList.remove('hidden'); loadAdminPanel(); updateAdminUI(); }
         else { adminBtn.classList.add('hidden'); }
         loadDashboard();
       } else {
-        section.innerHTML = `<div class="flex items-center gap-3 text-xs"><button onclick="openAuthModal(true)" class="text-slate-600 dark:text-slate-400 hover:underline">Login</button><button onclick="openAuthModal(false)" class="bg-slate-900 dark:bg-amber-600 text-white font-medium px-4 py-2">Registrieren</button></div>`;
+        section.innerHTML = `<div class="flex items-center gap-3 text-xs"><button onclick="openAuthModal(true)" class="text-slate-600 dark:text-slate-400 font-semibold hover:underline">Login</button><button onclick="openAuthModal(false)" class="bg-[#12233f] text-white dark:bg-[#c69214] font-bold px-4 py-2">Registrieren</button></div>`;
         adminBtn.classList.add('hidden');
       }
       renderStadium();
@@ -674,7 +686,7 @@
       if(!data || !data.length) { tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-slate-500">Keine ausstehenden Freigaben.</td></tr>`; }
       else {
         data.forEach(u => {
-          tbody.innerHTML += `<tr class="border-b border-slate-100 dark:border-slate-800"><td class="py-3">${u.ingame_name}</td><td class="py-3 text-slate-500">${u.discord}</td><td class="py-3 text-right"><button onclick="approveUser('${u.id}')" class="text-emerald-600 font-semibold hover:underline">Freigeben</button></td></tr>`;
+          tbody.innerHTML += `<tr class="border-b border-slate-200 dark:border-slate-800"><td class="py-3 font-semibold">${u.ingame_name}</td><td class="py-3 text-slate-500">${u.discord}</td><td class="py-3 text-right"><button onclick="approveUser('${u.id}')" class="text-emerald-600 font-bold hover:underline">Freigeben</button></td></tr>`;
         });
       }
 
@@ -684,10 +696,10 @@
       else {
         userTickets.forEach((t, i) => {
           tTbody.innerHTML += `
-            <tr class="border-b border-slate-100 dark:border-slate-800">
-              <td class="py-3">${t.player}</td>
-              <td class="py-3">${t.delivered ? '<span class="text-emerald-600">Übergeben</span>' : '<span class="text-amber-600">Offen</span>'}</td>
-              <td class="py-3 text-right"><button onclick="toggleTicketDelivery(${i})" class="text-amber-700 dark:text-amber-400 hover:underline">${t.delivered ? 'Als offen markieren' : 'Als übergeben markieren'}</button></td>
+            <tr class="border-b border-slate-200 dark:border-slate-800">
+              <td class="py-3 font-semibold">${t.player}</td>
+              <td class="py-3">${t.delivered ? '<span class="text-emerald-600 font-bold">Übergeben</span>' : '<span class="text-amber-600 font-bold">Offen</span>'}</td>
+              <td class="py-3 text-right"><button onclick="toggleTicketDelivery(${i})" class="text-[#c69214] font-bold hover:underline">${t.delivered ? 'Als offen markieren' : 'Als übergeben markieren'}</button></td>
             </tr>
           `;
         });
@@ -712,7 +724,7 @@
       const list = document.getElementById('my-todos-list');
       list.innerHTML = '';
       if(todos && todos.length) {
-        todos.forEach(t => list.innerHTML += `<div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800"><span>${t.title}</span><span class="text-amber-600">${t.status}</span></div>`);
+        todos.forEach(t => list.innerHTML += `<div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800"><span>${t.title}</span><span class="text-[#c69214] font-bold">${t.status}</span></div>`);
       } else { list.innerHTML = `<span class="text-slate-500">Keine Aufgaben</span>`; }
       document.getElementById('my-active-count').innerText = (todos || []).length;
 
@@ -723,8 +735,8 @@
         const ticket = userTickets[myIdx];
         tList.innerHTML = `
           <div class="space-y-2">
-            <div><b>${tournamentData.name}</b><br><span class="text-xs text-slate-500">${ticket.delivered ? '✓ Im Ingame-Inventar' : '⏳ Ausstehende Übergabe'}</span></div>
-            <button onclick="cancelTicket(${myIdx})" class="text-rose-600 hover:underline">Stornieren</button>
+            <div><b class="text-slate-900 dark:text-white">${tournamentData.name}</b><br><span class="text-slate-500">${ticket.delivered ? '✓ Im Ingame-Inventar' : '⏳ Ausstehende Übergabe'}</span></div>
+            <button onclick="cancelTicket(${myIdx})" class="text-rose-600 font-bold hover:underline">Stornieren</button>
           </div>
         `;
       } else {
