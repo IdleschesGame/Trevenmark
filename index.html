@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trevenmark – Minecraft City Portal</title>
+  <title>Trevenmark – Stadt der Kultur</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Supabase JS Client -->
@@ -14,27 +14,33 @@
       theme: {
         extend: {
           colors: {
-            brand: { 500: '#6366f1', 600: '#4f46e5' }
+            brand: {
+              DEFAULT: '#1e3a8a',
+              dark: '#0f172a',
+              gold: '#d97706',
+              goldLight: '#fbbf24'
+            }
           }
         }
       }
     }
   </script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col font-sans">
 
   <!-- NAVIGATION -->
-  <header class="bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+  <header class="bg-[#0f172a]/90 backdrop-blur border-b border-amber-500/20 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <span class="text-2xl">🏰</span>
-        <h1 class="text-xl font-black tracking-wider bg-gradient-to-r from-indigo-400 to-sky-400 bg-clip-text text-transparent">TREVENMARK</h1>
+        <span class="text-2xl">🏛️</span>
+        <h1 class="text-xl font-black tracking-widest bg-gradient-to-r from-amber-400 to-amber-200 bg-clip-text text-transparent">TREVENMARK</h1>
       </div>
       <nav class="hidden md:flex gap-6 text-sm font-semibold">
-        <button onclick="switchTab('stadium')" class="nav-btn text-indigo-400 hover:text-indigo-300 transition" data-target="page-stadium">🎟️ Arena Tickets</button>
-        <button onclick="switchTab('todos')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-todos">📋 Aufgaben</button>
-        <button onclick="switchTab('dashboard')" class="nav-btn text-slate-400 hover:text-indigo-300 transition" data-target="page-dashboard">👤 Mein Bereich</button>
-        <button id="admin-nav-btn" onclick="switchTab('admin')" class="nav-btn text-amber-400 hover:text-amber-300 transition hidden" data-target="page-admin">⚡ Admin-Panel</button>
+        <button onclick="switchTab('stadium')" class="nav-btn text-amber-400 hover:text-amber-300 transition" data-target="page-stadium">🎟️ Arena Tickets</button>
+        <button onclick="switchTab('build')" class="nav-btn text-slate-400 hover:text-amber-300 transition" data-target="page-build">🏗️ Bau & Planung</button>
+        <button onclick="switchTab('todos')" class="nav-btn text-slate-400 hover:text-amber-300 transition" data-target="page-todos">📋 Aufgaben</button>
+        <button onclick="switchTab('dashboard')" class="nav-btn text-slate-400 hover:text-amber-300 transition" data-target="page-dashboard">👤 Mein Bereich</button>
+        <button id="admin-nav-btn" onclick="switchTab('admin')" class="nav-btn text-amber-500 hover:text-amber-400 transition hidden" data-target="page-admin">⚡ Admin-Panel</button>
       </nav>
       <div id="auth-section" class="flex items-center gap-3"></div>
     </div>
@@ -43,124 +49,126 @@
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
 
-    <!-- PAGE 1: ARENA SAALPLAN & TICKETS -->
+    <!-- PAGE 1: ARENA TICKETS -->
     <section id="page-stadium" class="page-content space-y-6">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-6">
+      <div class="bg-[#111827] p-6 rounded-2xl border border-amber-500/20 shadow-xl space-y-6">
         <div class="flex justify-between items-center border-b border-slate-800 pb-4">
           <div>
-            <h2 class="text-2xl font-black flex items-center gap-2">⚽ Trevenmark Arena – Ticketshop</h2>
+            <h2 class="text-2xl font-black flex items-center gap-2 text-amber-400">⚽ Trevenmark Arena – Ticketshop</h2>
             <p id="tournament-info-text" class="text-xs text-slate-400 mt-1">Lade Turnierdaten...</p>
           </div>
-          <div id="my-ticket-badge" class="hidden bg-indigo-950 border border-indigo-500/30 px-4 py-2 rounded-xl text-xs font-bold text-indigo-300">
+          <div id="my-ticket-badge" class="hidden bg-blue-950/60 border border-amber-500/30 px-4 py-2 rounded-xl text-xs font-bold text-amber-300">
             Dein Status: <span id="my-ticket-type" class="text-white font-black text-sm">Kein Ticket</span>
           </div>
         </div>
 
-        <!-- Wenn KEIN Turnier freigeschaltet ist -->
-        <div id="stadium-locked-msg" class="bg-slate-950 p-12 rounded-xl border border-slate-800 text-center space-y-3">
+        <div id="stadium-locked-msg" class="bg-[#0b0f19] p-12 rounded-xl border border-slate-800 text-center space-y-3">
           <span class="text-4xl">🔒</span>
           <h3 class="text-xl font-bold text-slate-300">Der Ticketverkauf ist aktuell geschlossen.</h3>
           <p class="text-xs text-slate-500">Es findet derzeit kein angekündigtes Turnier statt oder der Saalplan wurde von der Admin-Leitung noch nicht freigeschaltet.</p>
         </div>
 
-        <!-- Wenn EIN Turnier freigeschaltet ist -->
         <div id="stadium-interactive" class="space-y-8 hidden">
-          
-          <!-- KAUF-BEREICH -->
-          <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#0b0f19] p-4 rounded-xl border border-amber-500/20">
             <div>
               <h3 class="text-sm font-bold text-white">Zuschauer-Tickets</h3>
-              <p class="text-xs text-slate-400">Verbleibende freie Sitzplätze: <b id="count-normal-free" class="text-emerald-400">0</b> von <span id="count-normal-total">0</span></p>
+              <p class="text-xs text-slate-400">Verbleibende freie Sitzplätze: <b id="count-normal-free" class="text-amber-400">0</b> von <span id="count-normal-total">0</span></p>
             </div>
-            <button onclick="buyTicket()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+            <button onclick="buyTicket()" class="w-full md:w-auto bg-amber-600 hover:bg-amber-500 text-slate-950 font-black text-sm px-6 py-2.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
               🎟️ Zuschauer-Ticket kaufen
             </button>
           </div>
 
           <!-- SAALPLAN UMRISS -->
-          <div class="max-w-3xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center gap-3">
-            
-            <!-- 1. TURNIERLEITUNG (OBEN ZENTRIERT) -->
-            <div class="w-3/4 mx-auto bg-blue-950/50 border-2 border-blue-500/50 p-2 rounded-xl text-center">
-              <div class="text-[11px] font-black text-blue-300 uppercase">🔍 Turnierleitung & Schiris</div>
-              <div class="text-[9px] text-blue-400">Gesperrter Bereich</div>
+          <div class="max-w-3xl mx-auto bg-[#0b0f19] p-6 rounded-2xl border border-amber-500/20 flex flex-col items-center gap-3">
+            <div class="w-3/4 mx-auto bg-blue-950/40 border border-blue-500/40 p-2 rounded-xl text-center">
+              <div class="text-[11px] font-black text-amber-300 uppercase">🔍 Turnierleitung & Schiris</div>
+              <div class="text-[9px] text-blue-300">Gesperrter Glaskasten</div>
             </div>
 
-            <!-- MITTELBEREICH: WEST / NORD-FELD-SÜD / OST -->
             <div class="w-full grid grid-cols-12 gap-3 items-center">
-              
-              <!-- TRIBÜNE WEST -->
-              <div class="col-span-2 bg-indigo-950/30 border border-indigo-500/30 py-20 text-center rounded-lg text-xs font-bold text-indigo-300 flex items-center justify-center">
+              <div class="col-span-2 bg-blue-950/20 border border-blue-500/20 py-20 text-center rounded-lg text-xs font-bold text-amber-200/70 flex items-center justify-center">
                 <span style="writing-mode: vertical-rl;" class="rotate-180">Tribüne West</span>
               </div>
 
-              <!-- ZENTRUM (TRIBÜNE NORD -> SPIELFELD -> TRIBÜNE SÜD) -->
               <div class="col-span-8 space-y-3">
-                
-                <!-- TRIBÜNE NORD (UNTER DER TURNIERLEITUNG) -->
-                <div class="w-full bg-indigo-950/40 border border-indigo-500/40 py-2 text-center rounded-lg text-xs font-bold text-indigo-300">
+                <div class="w-full bg-blue-950/30 border border-blue-500/30 py-2 text-center rounded-lg text-xs font-bold text-amber-200">
                   Tribüne Nord (Sitzplätze)
                 </div>
-
-                <!-- DAS SPIELFELD -->
-                <div class="w-full h-32 bg-emerald-950/40 border-2 border-emerald-600/50 rounded-xl flex items-center justify-center relative overflow-hidden">
-                  <div class="absolute inset-x-0 top-1/2 border-t border-emerald-500/30"></div>
-                  <div class="w-16 h-16 rounded-full border border-emerald-500/30 absolute"></div>
+                <div class="w-full h-32 bg-emerald-950/30 border-2 border-emerald-600/40 rounded-xl flex items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-x-0 top-1/2 border-t border-emerald-500/20"></div>
+                  <div class="w-16 h-16 rounded-full border border-emerald-500/20 absolute"></div>
                   <span class="text-xs font-black text-emerald-400/90 z-10 tracking-widest uppercase">⚽ Spielfeld</span>
                 </div>
-
-                <!-- TRIBÜNE SÜD (ÜBER DEM VIP BEREICH) -->
-                <div class="w-full bg-indigo-950/40 border border-indigo-500/40 py-2 text-center rounded-lg text-xs font-bold text-indigo-300">
+                <div class="w-full bg-blue-950/30 border border-blue-500/30 py-2 text-center rounded-lg text-xs font-bold text-amber-200">
                   Tribüne Süd (Sitzplätze)
                 </div>
-
               </div>
 
-              <!-- TRIBÜNE OST -->
-              <div class="col-span-2 bg-indigo-950/30 border border-indigo-500/30 py-20 text-center rounded-lg text-xs font-bold text-indigo-300 flex items-center justify-center">
+              <div class="col-span-2 bg-blue-950/20 border border-blue-500/20 py-20 text-center rounded-lg text-xs font-bold text-amber-200/70 flex items-center justify-center">
                 <span style="writing-mode: vertical-rl;">Tribüne Ost</span>
               </div>
-
             </div>
 
-            <!-- 2. VIP-BEREICH (UNTEN ZENTRIERT) -->
-            <div class="w-3/4 mx-auto bg-amber-950/50 border-2 border-amber-500/50 p-2 rounded-xl text-center">
-              <div class="text-[11px] font-black text-amber-300 uppercase">⭐ VIP-Bereich</div>
-              <div class="text-[9px] text-amber-400">Nur auf Einladung (Nicht käuflich)</div>
+            <div class="w-3/4 mx-auto bg-amber-950/40 border-2 border-amber-500/40 p-2 rounded-xl text-center">
+              <div class="text-[11px] font-black text-amber-400 uppercase">⭐ VIP-Bereich</div>
+              <div class="text-[9px] text-amber-300/80">Nur auf Einladung (Nicht käuflich)</div>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- PAGE 2: AUFGABEN -->
+    <!-- PAGE 2: BAU & PLANUNG -->
+    <section id="page-build" class="page-content space-y-6 hidden">
+      <div class="bg-[#111827] p-6 rounded-2xl border border-amber-500/20 shadow-xl space-y-6">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+          <div>
+            <h2 class="text-2xl font-black text-amber-400">🏗️ Bau- & Masterplan</h2>
+            <p class="text-xs text-slate-400 mt-1">Hier entsteht der offizielle Bauplan für Trevenmark.</p>
+          </div>
+        </div>
+
+        <div class="bg-[#0b0f19] p-8 rounded-xl border border-slate-800 text-center space-y-4">
+          <div id="blueprint-container" class="flex flex-col items-center justify-center space-y-4">
+            <!-- Dynamischer Bauplan / Bild -->
+            <div id="blueprint-placeholder" class="space-y-3 py-12">
+              <span class="text-5xl">📐</span>
+              <h3 class="text-lg font-bold text-slate-300">Noch kein Bauplan hochgeladen</h3>
+              <p class="text-xs text-slate-500 max-w-md mx-auto">Sobald der Bauplan feststeht, kann er im Admin-Panel hochgeladen werden oder direkt als Datei im Projektordner (`bauplan.png`) abgelegt werden.</p>
+            </div>
+            <img id="blueprint-img" src="" alt="Trevenmark Bauplan" class="max-h-[600px] rounded-xl border border-amber-500/30 shadow-2xl hidden">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 3: AUFGABEN -->
     <section id="page-todos" class="page-content space-y-6 hidden">
       <div class="flex justify-between items-center">
         <div>
-          <h2 class="text-2xl font-black">📋 Aufgaben & To-Dos</h2>
+          <h2 class="text-2xl font-black text-amber-400">📋 Aufgaben & To-Dos</h2>
           <p class="text-slate-400 text-xs mt-1">Normale Spieler können max. 3 aktive Aufgaben gleichzeitig besitzen.</p>
         </div>
-        <button onclick="openTodoModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+        <button onclick="openTodoModal()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition">
           + Aufgabe erstellen
         </button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="todos-grid"></div>
     </section>
 
-    <!-- PAGE 3: DASHBOARD -->
+    <!-- PAGE 4: DASHBOARD -->
     <section id="page-dashboard" class="page-content space-y-6 hidden">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
-        <h2 class="text-2xl font-black mb-2">👤 Mein Bereich</h2>
+      <div class="bg-[#111827] p-6 rounded-2xl border border-amber-500/20 shadow-xl">
+        <h2 class="text-2xl font-black mb-2 text-amber-400">👤 Mein Bereich</h2>
         <p class="text-slate-400 text-xs mb-6">Deine persönlichen Statistiken und Buchungen.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
-            <h3 class="font-bold text-sm text-indigo-400 mb-3">📋 Meine aktiven To-Dos (<span id="my-active-count">0</span> / 3)</h3>
+          <div class="bg-[#0b0f19] p-5 rounded-xl border border-slate-800">
+            <h3 class="font-bold text-sm text-amber-400 mb-3">📋 Meine aktiven To-Dos (<span id="my-active-count">0</span> / 3)</h3>
             <div id="my-todos-list" class="space-y-3"></div>
           </div>
-          <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
+          <div class="bg-[#0b0f19] p-5 rounded-xl border border-slate-800">
             <h3 class="font-bold text-sm text-amber-400 mb-3">🎟️ Meine Stadion-Tickets</h3>
             <div id="my-tickets-list" class="space-y-3"></div>
           </div>
@@ -168,77 +176,119 @@
       </div>
     </section>
 
-    <!-- PAGE 4: ADMIN PANEL -->
+    <!-- PAGE 5: ADMIN PANEL (MIT UNTERTEILUNGS-BUTTONS) -->
     <section id="page-admin" class="page-content space-y-6 hidden">
-      <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl space-y-6">
+      <div class="bg-[#111827] p-6 rounded-2xl border border-amber-500/30 shadow-xl space-y-6">
         <div>
           <h2 class="text-2xl font-black text-amber-400 mb-1">⚡ Admin-Verwaltung</h2>
-          <p class="text-slate-400 text-xs">Freigabe neuer Spieler, Turnier-Steuerung & Ticket-Lieferungen.</p>
+          <p class="text-slate-400 text-xs">Wähle einen Bereich zur Verwaltung aus.</p>
         </div>
 
-        <!-- TURNIER & ARENA FREISCHALTUNG -->
-        <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-          <h3 class="font-bold text-sm text-amber-300 flex items-center gap-2">⚽ Turnier- & Kapazitäts-Einstellungen</h3>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 mb-1">Turnier-Name</label>
-              <input type="text" id="admin-tournament-name" placeholder="z.B. Stadt-Cup 2026" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm">
+        <!-- UNTERTEILUNGS-BUTTONS FÜR ADMIN -->
+        <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-4">
+          <button onclick="switchAdminSub('stadium')" id="admin-btn-stadium" class="admin-sub-btn bg-amber-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition">⚽ Turnier & Arena</button>
+          <button onclick="switchAdminSub('build')" id="admin-btn-build" class="admin-sub-btn bg-[#0b0f19] text-slate-300 hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-800">🏗️ Bauplan Upload</button>
+          <button onclick="switchAdminSub('users')" id="admin-btn-users" class="admin-sub-btn bg-[#0b0f19] text-slate-300 hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-800">👥 Registrierungen</button>
+          <button onclick="switchAdminSub('todos')" id="admin-btn-todos" class="admin-sub-btn bg-[#0b0f19] text-slate-300 hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-800">📋 Aufgaben Erstellen</button>
+        </div>
+
+        <!-- ADMIN SUB-SECTION 1: TURNIER & ARENA ORGA -->
+        <div id="admin-sub-stadium" class="admin-sub-content space-y-6">
+          <div class="bg-[#0b0f19] p-5 rounded-xl border border-slate-800 space-y-4">
+            <h3 class="font-bold text-sm text-amber-300">⚽ Turnier- & Kapazitäts-Einstellungen</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Turnier-Name</label>
+                <input type="text" id="admin-tournament-name" placeholder="z.B. Stadt-Cup 2026" class="w-full bg-[#111827] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Datum & Uhrzeit</label>
+                <input type="datetime-local" id="admin-tournament-date" class="w-full bg-[#111827] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Max. Sitzplätze</label>
+                <input type="number" id="admin-tournament-seats" min="1" max="500" value="39" class="w-full bg-[#111827] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100">
+              </div>
+              <div class="flex items-end">
+                <button onclick="saveTournamentSettings()" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl transition">
+                  💾 Speichern
+                </button>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 mb-1">Datum & Uhrzeit</label>
-              <input type="datetime-local" id="admin-tournament-date" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 mb-1">Max. Sitzplätze</label>
-              <input type="number" id="admin-tournament-seats" min="1" max="500" value="39" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm">
-            </div>
-            <div class="flex items-end">
-              <button onclick="saveTournamentSettings()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs py-2.5 rounded-xl transition">
-                💾 Daten Speichern
+            
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+              <span class="text-xs font-semibold text-slate-300">Status Vorverkauf / Saalplan:</span>
+              <button id="admin-toggle-ticket-btn" onclick="toggleTicketSale()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">
+                🔓 Saalplan Freischalten
               </button>
             </div>
           </div>
-          
-          <div class="flex items-center justify-between pt-3 border-t border-slate-800/80">
-            <span class="text-xs font-semibold text-slate-300">Status Vorverkauf / Saalplan:</span>
-            <button id="admin-toggle-ticket-btn" onclick="toggleTicketSale()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition">
-              🔓 Saalplan Freischalten
-            </button>
+
+          <!-- TICKET LIEFERUNGEN -->
+          <div class="bg-[#0b0f19] p-5 rounded-xl border border-slate-800 space-y-4">
+            <h3 class="font-bold text-sm text-amber-300">🎟️ Gebuchte Tickets & Übergabe an Spieler</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-slate-300">
+                <thead class="bg-[#111827] text-amber-400 text-xs uppercase">
+                  <tr>
+                    <th class="p-3 rounded-l-lg">Spieler (Ingame)</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3 rounded-r-lg text-right">Aktion</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-tickets-table"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        <!-- LISTE ALLER TICKET-BUCHUNGEN (ADMIN LIEFERANZEIGE) -->
-        <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-          <h3 class="font-bold text-sm text-sky-400 flex items-center gap-2">🎟️ Gebuchte Tickets & Übergabe an Spieler</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-300">
-              <thead class="bg-slate-900 text-slate-400 text-xs uppercase">
-                <tr>
-                  <th class="p-3 rounded-l-lg">Spieler (Ingame)</th>
-                  <th class="p-3">Status</th>
-                  <th class="p-3 rounded-r-lg text-right">Aktion</th>
-                </tr>
-              </thead>
-              <tbody id="admin-tickets-table"></tbody>
-            </table>
+        <!-- ADMIN SUB-SECTION 2: BAUPLAN UPLOAD -->
+        <div id="admin-sub-build" class="admin-sub-content space-y-6 hidden">
+          <div class="bg-[#0b0f19] p-5 rounded-xl border border-slate-800 space-y-4">
+            <h3 class="font-bold text-sm text-amber-300">🏗️ Bauplan-Bild hochladen</h3>
+            <p class="text-xs text-slate-400">Lade hier das Bild eures Bauplans hoch (wird direkt im Browser gespeichert und angezeigt) oder lege eine Datei namens <code class="text-amber-400">bauplan.png</code> in deinen Ordner.</p>
+            <div class="flex items-center gap-4">
+              <input type="file" id="blueprint-file-input" accept="image/*" class="text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-600 file:text-slate-955 hover:file:bg-amber-500 cursor-pointer">
+              <button onclick="uploadBlueprint()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition">Hochladen & Anwenden</button>
+            </div>
           </div>
         </div>
-        
-        <!-- REGISTRIERUNGEN -->
-        <div class="space-y-3">
-          <h3 class="font-bold text-sm text-slate-300">Ausstehende Registrierungen:</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-300">
-              <thead class="bg-slate-950 text-slate-400 text-xs uppercase">
-                <tr>
-                  <th class="p-3 rounded-l-lg">Ingame Name</th>
-                  <th class="p-3">Discord</th>
-                  <th class="p-3">Rolle</th>
-                  <th class="p-3 rounded-r-lg text-right">Aktion</th>
-                </tr>
-              </thead>
-              <tbody id="admin-pending-users"></tbody>
-            </table>
+
+        <!-- ADMIN SUB-SECTION 3: REGISTRIERUNGEN -->
+        <div id="admin-sub-users" class="admin-sub-content space-y-6 hidden">
+          <div class="bg-[#0b0f19] p-5 rounded-xl border border-slate-800 space-y-4">
+            <h3 class="font-bold text-sm text-amber-300">👥 Ausstehende Spieler-Registrierungen</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm text-slate-300">
+                <thead class="bg-[#111827] text-amber-400 text-xs uppercase">
+                  <tr>
+                    <th class="p-3 rounded-l-lg">Ingame Name</th>
+                    <th class="p-3">Discord</th>
+                    <th class="p-3">Rolle</th>
+                    <th class="p-3 rounded-r-lg text-right">Aktion</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-pending-users"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADMIN SUB-SECTION 4: AUFGABEN ERSTELLEN -->
+        <div id="admin-sub-todos" class="admin-sub-content space-y-6 hidden">
+          <div class="bg-[#0b0f19] p-5 rounded-xl border border-slate-800 space-y-4">
+            <h3 class="font-bold text-sm text-amber-300">📋 Neue Aufgabe für Spieler erstellen</h3>
+            <form onsubmit="handleCreateTodo(event)" class="space-y-4 max-w-lg">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Titel der Aufgabe</label>
+                <input type="text" id="todo-title-input" required class="w-full bg-[#111827] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100" placeholder="z.B. Holz für Arena farmen">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Beschreibung</label>
+                <textarea id="todo-desc-input" rows="3" required class="w-full bg-[#111827] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100" placeholder="Details zur Aufgabe..."></textarea>
+              </div>
+              <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition">Aufgabe veröffentlichen</button>
+            </form>
           </div>
         </div>
 
@@ -249,24 +299,24 @@
 
   <!-- AUTH MODAL -->
   <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-md p-6 rounded-2xl shadow-2xl relative">
-      <h3 id="auth-modal-title" class="text-xl font-bold mb-4">Registrierung</h3>
+    <div class="bg-[#111827] border border-amber-500/30 w-full max-w-md p-6 rounded-2xl shadow-2xl relative">
+      <h3 id="auth-modal-title" class="text-xl font-bold mb-4 text-amber-400">Registrierung</h3>
       <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-400 mb-1">Minecraft Ingame Name</label>
-          <input type="text" id="ign-input" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+          <input type="text" id="ign-input" required class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-amber-500 focus:outline-none">
         </div>
         <div id="discord-field">
           <label class="block text-xs font-semibold text-slate-400 mb-1">Discord Tag</label>
-          <input type="text" id="discord-input" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500" placeholder="DeinName#0000">
+          <input type="text" id="discord-input" required class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-amber-500 focus:outline-none" placeholder="DeinName#0000">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-400 mb-1">Passwort</label>
-          <input type="password" id="pass-input" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+          <input type="password" id="pass-input" required class="w-full bg-[#0b0f19] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-amber-500 focus:outline-none">
         </div>
         <div class="flex justify-between items-center text-xs pt-2">
-          <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-indigo-400 hover:underline">Bereits registriert? Login</button>
-          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2 rounded-xl transition">Absenden</button>
+          <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-amber-400 hover:underline">Bereits registriert? Login</button>
+          <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl transition">Absenden</button>
         </div>
       </form>
       <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-300">✕</button>
@@ -281,7 +331,6 @@
     let currentUser = null;
     let isLoginMode = false;
 
-    // TURNIER & STADION STATE
     let tournamentData = JSON.parse(localStorage.getItem('tm_tournament')) || {
       name: "Trevenmark Meisterschaft 2026",
       date: "2026-11-20T18:00",
@@ -289,10 +338,67 @@
       active: false
     };
 
-    // Struktur: [ { player: "Name", delivered: false } ]
     let userTickets = JSON.parse(localStorage.getItem('tm_user_tickets')) || [];
+    let blueprintData = localStorage.getItem('tm_blueprint_image') || "";
 
-    // ARENA & SAALPLAN RENDERER
+    // NAVIGATION & TABS
+    function switchTab(tabId) {
+      document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('page-' + tabId).classList.remove('hidden');
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-amber-400', 'text-amber-500'));
+      const activeBtn = document.querySelector(`[data-target="page-${tabId}"]`);
+      if(activeBtn) activeBtn.classList.add(tabId === 'admin' ? 'text-amber-500' : 'text-amber-400');
+      
+      if(tabId === 'stadium') renderStadium();
+      if(tabId === 'build') renderBlueprint();
+      if(tabId === 'todos') loadTodos();
+    }
+
+    function switchAdminSub(subId) {
+      document.querySelectorAll('.admin-sub-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById('admin-sub-' + subId).classList.remove('hidden');
+      document.querySelectorAll('.admin-sub-btn').forEach(btn => {
+        btn.className = "admin-sub-btn bg-[#0b0f19] text-slate-300 hover:bg-slate-800 font-bold text-xs px-4 py-2 rounded-xl transition border border-slate-800";
+      });
+      document.getElementById('admin-btn-' + subId).className = "admin-sub-btn bg-amber-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition";
+    }
+
+    // BAUPLAN ANZEIGE & UPLOAD
+    function renderBlueprint() {
+      const img = document.getElementById('blueprint-img');
+      const placeholder = document.getElementById('blueprint-placeholder');
+      
+      // Prüfen ob lokaler Upload da ist oder Standard 'bauplan.png' im Ordner existiert
+      const planSrc = blueprintData || "./bauplan.png";
+
+      img.src = planSrc;
+      img.onload = () => {
+        img.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      };
+      img.onerror = () => {
+        img.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+      };
+    }
+
+    function uploadBlueprint() {
+      const fileInput = document.getElementById('blueprint-file-input');
+      if(fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          blueprintData = e.target.result;
+          localStorage.setItem('tm_blueprint_image', blueprintData);
+          alert("Bauplan erfolgreich hochgeladen und gespeichert!");
+          renderBlueprint();
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        alert("Bitte wähle zuerst eine Bilddatei aus.");
+      }
+    }
+
+    // ARENA RENDERER
     function renderStadium() {
       const lockedMsg = document.getElementById('stadium-locked-msg');
       const interactive = document.getElementById('stadium-interactive');
@@ -308,16 +414,14 @@
       lockedMsg.classList.add('hidden');
       interactive.classList.remove('hidden');
       const formattedDate = new Date(tournamentData.date).toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' });
-      infoText.innerHTML = `<b class="text-indigo-400">${tournamentData.name}</b> • Vorverkauf geöffnet (Anpfiff: ${formattedDate} Uhr)`;
+      infoText.innerHTML = `<b class="text-amber-400">${tournamentData.name}</b> • Vorverkauf geöffnet (Anpfiff: ${formattedDate} Uhr)`;
 
-      // Ticket-Zähler berechnen
       const bookedCount = userTickets.length;
       const maxSeats = tournamentData.maxSeats || 39;
 
       document.getElementById('count-normal-free').innerText = maxSeats - bookedCount;
       document.getElementById('count-normal-total').innerText = maxSeats;
 
-      // User Ticket Badge
       const myTicketBadge = document.getElementById('my-ticket-badge');
       const myTicketType = document.getElementById('my-ticket-type');
       let myTicket = currentUser ? userTickets.find(t => t.player === currentUser.ingame_name) : null;
@@ -330,30 +434,29 @@
       }
     }
 
-    // TICKET KAUFEN / STORNIEREN
     function buyTicket() {
       if(!currentUser) {
-        alert("Bitte melde dich an, um ein Ticket für das Turnier zu buchen!");
+        alert("Bitte melde dich an, um ein Ticket zu buchen!");
         openAuthModal(true);
         return;
       }
 
-      const existingTicket = userTickets.find(t => t.player === currentUser.ingame_name);
-      if(existingTicket) {
-        alert("Du besitzt bereits ein Ticket! (Maximal 1 Ticket pro Spieler).");
+      const existing = userTickets.find(t => t.player === currentUser.ingame_name);
+      if(existing) {
+        alert("Du besitzt bereits ein Ticket!");
         return;
       }
 
       const maxSeats = tournamentData.maxSeats || 39;
       if(userTickets.length >= maxSeats) {
-        alert("Leider sind alle Zuschauer-Tickets für dieses Turnier ausverkauft!");
+        alert("Alle Zuschauer-Tickets sind ausverkauft!");
         return;
       }
 
-      if(confirm(`Möchtest du verbindlich 1x Zuschauer-Ticket für ${tournamentData.name} reservieren?`)) {
+      if(confirm(`Zuschauer-Ticket für ${tournamentData.name} reservieren?`)) {
         userTickets.push({ player: currentUser.ingame_name, delivered: false });
         localStorage.setItem('tm_user_tickets', JSON.stringify(userTickets));
-        alert("Erfolgreich gebucht! Du hast ein Zuschauer-Ticket reserviert.");
+        alert("Ticket erfolgreich reserviert!");
         renderStadium();
         loadDashboard();
         if(currentUser.role === 'admin') loadAdminPanel();
@@ -361,7 +464,7 @@
     }
 
     function cancelTicket(index) {
-      if(confirm("Möchtest du dieses Ticket wirklich stornieren?")) {
+      if(confirm("Ticket wirklich stornieren?")) {
         userTickets.splice(index, 1);
         localStorage.setItem('tm_user_tickets', JSON.stringify(userTickets));
         renderStadium();
@@ -370,7 +473,39 @@
       }
     }
 
-    // ADMIN TURNIER STEUERUNG & TICKET-LIEFERUNGEN
+    // TODO SYSTEM
+    async function loadTodos() {
+      const { data: todos } = await supabaseClient.from('todos').select('*');
+      const grid = document.getElementById('todos-grid');
+      grid.innerHTML = '';
+      if(!todos || todos.length === 0) {
+        grid.innerHTML = `<p class="text-slate-500 text-xs col-span-3">Keine Aufgaben vorhanden.</p>`;
+        return;
+      }
+      todos.forEach(t => {
+        grid.innerHTML += `
+          <div class="bg-[#111827] p-4 rounded-xl border border-slate-800 space-y-2">
+            <h4 class="font-bold text-amber-300 text-sm">${t.title}</h4>
+            <p class="text-xs text-slate-400">${t.description}</p>
+            <div class="text-[10px] text-slate-500">Status: ${t.status}</div>
+          </div>
+        `;
+      });
+    }
+
+    async function handleCreateTodo(e) {
+      e.preventDefault();
+      const title = document.getElementById('todo-title-input').value.trim();
+      const desc = document.getElementById('todo-desc-input').value.trim();
+      const { error } = await supabaseClient.from('todos').insert([{ title, description: desc, status: 'open' }]);
+      if(error) { alert('Fehler: ' + error.message); return; }
+      alert('Aufgabe erfolgreich erstellt!');
+      document.getElementById('todo-title-input').value = '';
+      document.getElementById('todo-desc-input').value = '';
+      loadTodos();
+    }
+
+    // ADMIN STEUERUNG
     function saveTournamentSettings() {
       const name = document.getElementById('admin-tournament-name').value.trim();
       const date = document.getElementById('admin-tournament-date').value;
@@ -425,10 +560,12 @@
     function switchTab(tabId) {
       document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
       document.getElementById('page-' + tabId).classList.remove('hidden');
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-indigo-400', 'text-amber-400'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-amber-400', 'text-amber-500'));
       const activeBtn = document.querySelector(`[data-target="page-${tabId}"]`);
-      if(activeBtn) activeBtn.classList.add(tabId === 'admin' ? 'text-amber-400' : 'text-indigo-400');
+      if(activeBtn) activeBtn.classList.add(tabId === 'admin' ? 'text-amber-500' : 'text-amber-400');
       if(tabId === 'stadium') renderStadium();
+      if(tabId === 'build') renderBlueprint();
+      if(tabId === 'todos') loadTodos();
     }
 
     function openAuthModal(login = false) {
@@ -477,7 +614,7 @@
       const adminBtn = document.getElementById('admin-nav-btn');
 
       if(currentUser) {
-        authSection.innerHTML = `<div class="flex items-center gap-3"><span class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">👤 ${currentUser.ingame_name}</span><button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button></div>`;
+        authSection.innerHTML = `<div class="flex items-center gap-3"><span class="text-xs font-bold bg-[#111827] px-3 py-1.5 rounded-xl border border-amber-500/20 text-amber-300">👤 ${currentUser.ingame_name}</span><button onclick="logout()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition">Logout</button></div>`;
         if(currentUser.role === 'admin') { 
           adminBtn.classList.remove('hidden'); 
           loadAdminPanel(); 
@@ -487,14 +624,13 @@
         }
         loadDashboard();
       } else {
-        authSection.innerHTML = `<button onclick="openAuthModal(true)" class="text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5">Login</button><button onclick="openAuthModal(false)" class="bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white px-4 py-2 rounded-xl transition">Registrieren</button>`;
+        authSection.innerHTML = `<button onclick="openAuthModal(true)" class="text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5">Login</button><button onclick="openAuthModal(false)" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition">Registrieren</button>`;
         adminBtn.classList.add('hidden'); 
       }
       renderStadium();
     }
 
     async function loadAdminPanel() {
-      // 1. Registrierungen
       const { data } = await supabaseClient.from('profiles').select('*').eq('is_approved', false);
       const tbody = document.getElementById('admin-pending-users');
       tbody.innerHTML = '';
@@ -502,30 +638,23 @@
         tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Keine ausstehenden Registrierungen.</td></tr>`; 
       } else {
         data.forEach(user => {
-          tbody.innerHTML += `<tr class="border-b border-slate-800/50"><td class="p-3 font-semibold">${user.ingame_name}</td><td class="p-3 text-slate-400">${user.discord}</td><td class="p-3"><span class="bg-slate-800 text-xs px-2 py-1 rounded">Spieler</span></td><td class="p-3 text-right"><button onclick="approveUser('${user.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freigeben</button></td></tr>`;
+          tbody.innerHTML += `<tr class="border-b border-slate-800"><td class="p-3 font-semibold">${user.ingame_name}</td><td class="p-3 text-slate-400">${user.discord}</td><td class="p-3"><span class="bg-slate-800 text-xs px-2 py-1 rounded">Spieler</span></td><td class="p-3 text-right"><button onclick="approveUser('${user.id}')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">Freigeben</button></td></tr>`;
         });
       }
 
-      // 2. Ticket-Bestellungsanzeige für Admins
       const ticketTbody = document.getElementById('admin-tickets-table');
       ticketTbody.innerHTML = '';
-      
       if(userTickets.length === 0) {
         ticketTbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-500">Noch keine Ticket-Buchungen vorhanden.</td></tr>`;
       } else {
         userTickets.forEach((t, idx) => {
-          const isDelivered = t.delivered;
           ticketTbody.innerHTML += `
-            <tr class="border-b border-slate-800/50">
+            <tr class="border-b border-slate-800">
               <td class="p-3 font-semibold text-slate-200">${t.player}</td>
-              <td class="p-3">
-                ${isDelivered 
-                  ? `<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg inline-flex items-center gap-1">✓ Übergeben</span>`
-                  : `<span class="bg-amber-950 text-amber-400 border border-amber-800 text-xs font-bold px-2.5 py-1 rounded-lg inline-flex items-center gap-1">⏳ Offen</span>`}
-              </td>
+              <td class="p-3">${t.delivered ? '<span class="text-emerald-400 font-bold">✓ Übergeben</span>' : '<span class="text-amber-400 font-bold">⏳ Offen</span>'}</td>
               <td class="p-3 text-right">
-                <button onclick="toggleTicketDelivery(${idx})" class="${isDelivered ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-emerald-600 hover:bg-emerald-500 text-white'} font-bold text-xs px-3 py-1.5 rounded-lg transition">
-                  ${isDelivered ? 'Als offen markieren' : '✓ Als geliefert markieren'}
+                <button onclick="toggleTicketDelivery(${idx})" class="${t.delivered ? 'bg-slate-800 text-slate-300' : 'bg-amber-600 text-slate-950'} font-bold text-xs px-3 py-1.5 rounded-lg transition">
+                  ${t.delivered ? 'Als offen markieren' : '✓ Als geliefert markieren'}
                 </button>
               </td>
             </tr>
@@ -541,22 +670,20 @@
 
     async function loadDashboard() {
       if(!currentUser) return;
-      const { data: todos } = await supabaseClient.from('todos').select('*').eq('assigned_to', currentUser.ingame_name);
+      const { data: todos } = await supabaseClient.from('todos').select('*');
       const todoList = document.getElementById('my-todos-list');
       const activeCount = document.getElementById('my-active-count');
       todoList.innerHTML = '';
-      let count = 0;
+      let count = (todos || []).length;
       if(todos && todos.length > 0) {
         todos.forEach(t => {
-          if(t.status !== 'completed') count++;
-          todoList.innerHTML += `<div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs"><span>${t.title}</span><span class="text-indigo-400">${t.status}</span></div>`;
+          todoList.innerHTML += `<div class="bg-[#111827] p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs"><span>${t.title}</span><span class="text-amber-400">${t.status}</span></div>`;
         });
       } else {
         todoList.innerHTML = `<p class="text-slate-500 text-xs">Keine Aufgaben.</p>`;
       }
       activeCount.innerText = count;
 
-      // Tickets im Dashboard des Spielers anzeigen
       const ticketList = document.getElementById('my-tickets-list');
       ticketList.innerHTML = '';
       let myIndex = userTickets.findIndex(t => t.player === currentUser.ingame_name);
@@ -564,10 +691,10 @@
       if(myIndex !== -1) {
         const ticket = userTickets[myIndex];
         ticketList.innerHTML = `
-          <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+          <div class="bg-[#111827] p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
             <div>
               <b class="text-white">${tournamentData.name}</b><br>
-              <span class="text-indigo-400 font-bold">Zuschauer-Ticket</span>
+              <span class="text-amber-400 font-bold">Zuschauer-Ticket</span>
               <span class="ml-2 ${ticket.delivered ? 'text-emerald-400' : 'text-amber-400'}">
                 (${ticket.delivered ? '✓ Im Ingame-Inventar' : '⏳ Ausstehende Übergabe'})
               </span>
@@ -575,7 +702,7 @@
             <button onclick="cancelTicket(${myIndex})" class="text-rose-400 hover:underline">Stornieren</button>
           </div>`;
       } else {
-        ticketList.innerHTML = `<p class="text-slate-500 text-xs">Keine Tickets gebucht.</p>`;
+        ticketList.innerHTML = `<p class="text-slate-500 text-xs">Noch kein Ticket gebucht.</p>`;
       }
     }
 
