@@ -75,7 +75,7 @@
             <p id="tournament-info-text" class="text-xs text-slate-400 mt-1">Lade Turnierdaten...</p>
           </div>
           <div id="my-ticket-badge" class="hidden bg-indigo-950 border border-indigo-500/30 px-4 py-2 rounded-xl text-xs font-bold text-indigo-300">
-            Dein Ticket: <span id="my-ticket-type" class="text-white font-black text-sm">Keins</span>
+            Dein Status: <span id="my-ticket-type" class="text-white font-black text-sm">Kein Ticket</span>
           </div>
         </div>
 
@@ -89,59 +89,67 @@
         <!-- Wenn EIN Turnier freigeschaltet ist -->
         <div id="stadium-interactive" class="space-y-8 hidden">
           
-          <!-- KAUF-BUTTONS -->
-          <div class="flex flex-wrap justify-center gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
-            <button onclick="buyTicket('Zuschauer')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg flex items-center gap-2">
-              🎟️ Normales Ticket kaufen (<span id="count-normal-free">0</span> Frei)
-            </button>
-            <button onclick="buyTicket('VIP')" class="bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition shadow-lg flex items-center gap-2">
-              ⭐ VIP Ticket kaufen (<span id="count-vip-free">0</span> Frei)
+          <!-- KAUF-BEREICH -->
+          <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <div>
+              <h3 class="text-sm font-bold text-white">Zuschauer-Tickets</h3>
+              <p class="text-xs text-slate-400">Verbleibende freie Sitzplätze: <b id="count-normal-free" class="text-emerald-400">0</b> von <span id="count-normal-total">0</span></p>
+            </div>
+            <button onclick="buyTicket()" class="w-full md:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-6 py-2.5 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+              🎟️ Zuschauer-Ticket kaufen
             </button>
           </div>
 
-          <!-- ARENA SAALPLAN VISUALISIERUNG -->
-          <div class="max-w-3xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center gap-4 relative">
+          <!-- SAALPLAN UMRISS -->
+          <div class="max-w-3xl mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center gap-3">
             
-            <!-- 1. OBEN: TURNIERLEITUNG & SCHIRIS (GLASKASTEN) -->
-            <div class="w-full bg-blue-950/40 border-2 border-blue-500/40 p-3 rounded-xl text-center space-y-1">
-              <div class="text-xs font-black text-blue-300 uppercase tracking-wider">
-                🔍 Glaskasten (Turnierleitung & Schiris)
-              </div>
-              <p class="text-[10px] text-blue-400">Reserviert für Admins & Schiedsrichter</p>
+            <!-- TRIBÜNE NORD -->
+            <div class="w-full bg-indigo-950/30 border border-indigo-500/30 py-1.5 text-center rounded-lg text-xs font-bold text-indigo-300">
+              Tribüne Nord (Sitzplätze)
             </div>
 
-            <!-- MITTE: TRIBÜNEN LINKS / FELD / TRIBÜNEN RECHTS -->
+            <!-- MITTELBEREICH -->
             <div class="w-full grid grid-cols-12 gap-3 items-center">
               
-              <!-- Tribüne Links -->
-              <div class="col-span-2 bg-slate-900/60 border border-slate-800 p-2 rounded-xl text-center space-y-1 h-36 flex flex-col justify-center">
-                <span class="text-xs font-bold text-slate-400">Blöcke</span>
-                <span class="text-sm font-black text-indigo-400">A – G</span>
-                <span class="text-[10px] text-slate-500">Tribüne West</span>
+              <!-- TRIBÜNE WEST -->
+              <div class="col-span-2 bg-indigo-950/30 border border-indigo-500/30 py-12 text-center rounded-lg text-xs font-bold text-indigo-300 flex items-center justify-center">
+                <span style="writing-mode: vertical-rl;" class="rotate-180">Tribüne West</span>
               </div>
 
-              <!-- DAS SPIELFELD (ZENTRUM) -->
-              <div class="col-span-8 h-36 bg-emerald-950/40 border-2 border-emerald-600/50 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
-                <div class="absolute inset-x-0 top-1/2 border-t border-emerald-500/30"></div>
-                <div class="w-20 h-20 rounded-full border border-emerald-500/30 absolute"></div>
-                <span class="text-sm font-black text-emerald-400/90 z-10 tracking-widest uppercase">⚽ Arena Spielfeld</span>
+              <!-- ZENTRUM (OBEN: TURNIERLEITUNG, MITTE: FELD, UNTEN: VIP) -->
+              <div class="col-span-8 space-y-3">
+                
+                <!-- OBERER RANG: TURNIERLEITUNG -->
+                <div class="w-3/4 mx-auto bg-blue-950/50 border-2 border-blue-500/50 p-2 rounded-xl text-center">
+                  <div class="text-[11px] font-black text-blue-300 uppercase">🔍 Turnierleitung & Schiris</div>
+                  <div class="text-[9px] text-blue-400">Gesperrter Bereich</div>
+                </div>
+
+                <!-- DAS SPIELFELD -->
+                <div class="w-full h-32 bg-emerald-950/40 border-2 border-emerald-600/50 rounded-xl flex items-center justify-center relative overflow-hidden">
+                  <div class="absolute inset-x-0 top-1/2 border-t border-emerald-500/30"></div>
+                  <div class="w-16 h-16 rounded-full border border-emerald-500/30 absolute"></div>
+                  <span class="text-xs font-black text-emerald-400/90 z-10 tracking-widest uppercase">⚽ Spielfeld</span>
+                </div>
+
+                <!-- UNTERER RANG: VIP BEREICH -->
+                <div class="w-3/4 mx-auto bg-amber-950/50 border-2 border-amber-500/50 p-2 rounded-xl text-center">
+                  <div class="text-[11px] font-black text-amber-300 uppercase">⭐ VIP-Bereich</div>
+                  <div class="text-[9px] text-amber-400">Nur auf Einladung (Nicht käuflich)</div>
+                </div>
+
               </div>
 
-              <!-- Tribüne Rechts -->
-              <div class="col-span-2 bg-slate-900/60 border border-slate-800 p-2 rounded-xl text-center space-y-1 h-36 flex flex-col justify-center">
-                <span class="text-xs font-bold text-slate-400">Blöcke</span>
-                <span class="text-sm font-black text-sky-400">J – O</span>
-                <span class="text-[10px] text-slate-500">Tribüne Ost</span>
+              <!-- TRIBÜNE OST -->
+              <div class="col-span-2 bg-indigo-950/30 border border-indigo-500/30 py-12 text-center rounded-lg text-xs font-bold text-indigo-300 flex items-center justify-center">
+                <span style="writing-mode: vertical-rl;">Tribüne Ost</span>
               </div>
 
             </div>
 
-            <!-- 2. UNTEN: VIP BEREICH -->
-            <div class="w-full bg-amber-950/40 border-2 border-amber-500/40 p-3 rounded-xl text-center space-y-1">
-              <div class="text-xs font-black text-amber-300 uppercase tracking-wider">
-                ⭐ VIP Bereich
-              </div>
-              <p class="text-[10px] text-amber-400">Exklusive Loge für VIP-Ticket Inhaber</p>
+            <!-- TRIBÜNE SÜD -->
+            <div class="w-full bg-indigo-950/30 border border-indigo-500/30 py-1.5 text-center rounded-lg text-xs font-bold text-indigo-300">
+              Tribüne Süd (Sitzplätze)
             </div>
 
           </div>
@@ -207,8 +215,8 @@
 
         <!-- TURNIER & ARENA FREISCHALTUNG -->
         <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-          <h3 class="font-bold text-sm text-amber-300 flex items-center gap-2">⚽ Turnier- & Ticket-Steuerung</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <h3 class="font-bold text-sm text-amber-300 flex items-center gap-2">⚽ Turnier- & Kapazitäts-Einstellungen</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label class="block text-xs font-semibold text-slate-400 mb-1">Turnier-Name</label>
               <input type="text" id="admin-tournament-name" placeholder="z.B. Stadt-Cup 2026" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm">
@@ -216,6 +224,10 @@
             <div>
               <label class="block text-xs font-semibold text-slate-400 mb-1">Datum & Uhrzeit</label>
               <input type="datetime-local" id="admin-tournament-date" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Max. Sitzplätze</label>
+              <input type="number" id="admin-tournament-seats" min="1" max="500" value="39" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm">
             </div>
             <div class="flex items-end">
               <button onclick="saveTournamentSettings()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs py-2.5 rounded-xl transition">
@@ -240,7 +252,6 @@
               <thead class="bg-slate-900 text-slate-400 text-xs uppercase">
                 <tr>
                   <th class="p-3 rounded-l-lg">Spieler (Ingame)</th>
-                  <th class="p-3">Ticket Typ</th>
                   <th class="p-3">Status</th>
                   <th class="p-3 rounded-r-lg text-right">Aktion</th>
                 </tr>
@@ -310,18 +321,15 @@
     let currentUser = null;
     let isLoginMode = false;
 
-    // KONTINGENTE
-    const MAX_NORMAL_TICKETS = 39;
-    const MAX_VIP_TICKETS = 6;
-
-    // STATE
+    // TURNIER & STADION STATE
     let tournamentData = JSON.parse(localStorage.getItem('tm_tournament')) || {
       name: "Trevenmark Meisterschaft 2026",
       date: "2026-11-20T18:00",
+      maxSeats: 39,
       active: false
     };
 
-    // Stuktur von userTickets: [ { player: "Name", type: "Zuschauer", delivered: false } ]
+    // Struktur: [ { player: "Name", delivered: false } ]
     let userTickets = JSON.parse(localStorage.getItem('tm_user_tickets')) || [];
 
     // KARTEN HYBRID CHECK
@@ -373,11 +381,11 @@
       infoText.innerHTML = `<b class="text-indigo-400">${tournamentData.name}</b> • Vorverkauf geöffnet (Anpfiff: ${formattedDate} Uhr)`;
 
       // Ticket-Zähler berechnen
-      const normalCount = userTickets.filter(t => t.type === 'Zuschauer').length;
-      const vipCount = userTickets.filter(t => t.type === 'VIP').length;
+      const bookedCount = userTickets.length;
+      const maxSeats = tournamentData.maxSeats || 39;
 
-      document.getElementById('count-normal-free').innerText = MAX_NORMAL_TICKETS - normalCount;
-      document.getElementById('count-vip-free').innerText = MAX_VIP_TICKETS - vipCount;
+      document.getElementById('count-normal-free').innerText = maxSeats - bookedCount;
+      document.getElementById('count-normal-total').innerText = maxSeats;
 
       // User Ticket Badge
       const myTicketBadge = document.getElementById('my-ticket-badge');
@@ -386,14 +394,14 @@
 
       if(myTicket) {
         myTicketBadge.classList.remove('hidden');
-        myTicketType.innerText = myTicket.type + " Ticket";
+        myTicketType.innerText = "Zuschauer-Ticket Gebucht";
       } else {
         myTicketBadge.classList.add('hidden');
       }
     }
 
     // TICKET KAUFEN / STORNIEREN
-    function buyTicket(type) {
+    function buyTicket() {
       if(!currentUser) {
         alert("Bitte melde dich an, um ein Ticket für das Turnier zu buchen!");
         openAuthModal(true);
@@ -402,23 +410,20 @@
 
       const existingTicket = userTickets.find(t => t.player === currentUser.ingame_name);
       if(existingTicket) {
-        alert(`Du besitzt bereits ein ${existingTicket.type}-Ticket! (Maximal 1 Ticket pro Spieler).`);
+        alert("Du besitzt bereits ein Ticket! (Maximal 1 Ticket pro Spieler).");
         return;
       }
 
-      // Prüfe Kontingent
-      const currentCount = userTickets.filter(t => t.type === type).length;
-      const maxCount = type === 'VIP' ? MAX_VIP_TICKETS : MAX_NORMAL_TICKETS;
-
-      if(currentCount >= maxCount) {
-        alert(`Leider sind alle ${type}-Tickets ausverkauft!`);
+      const maxSeats = tournamentData.maxSeats || 39;
+      if(userTickets.length >= maxSeats) {
+        alert("Leider sind alle Zuschauer-Tickets für dieses Turnier ausverkauft!");
         return;
       }
 
-      if(confirm(`Möchtest du verbindlich 1x ${type}-Ticket für ${tournamentData.name} reservieren?`)) {
-        userTickets.push({ player: currentUser.ingame_name, type: type, delivered: false });
+      if(confirm(`Möchtest du verbindlich 1x Zuschauer-Ticket für ${tournamentData.name} reservieren?`)) {
+        userTickets.push({ player: currentUser.ingame_name, delivered: false });
         localStorage.setItem('tm_user_tickets', JSON.stringify(userTickets));
-        alert(`Erfolgreich gebucht! Du hast ein ${type}-Ticket reserviert.`);
+        alert("Erfolgreich gebucht! Du hast ein Zuschauer-Ticket reserviert.");
         renderStadium();
         loadDashboard();
         if(currentUser.role === 'admin') loadAdminPanel();
@@ -439,8 +444,11 @@
     function saveTournamentSettings() {
       const name = document.getElementById('admin-tournament-name').value.trim();
       const date = document.getElementById('admin-tournament-date').value;
+      const seats = parseInt(document.getElementById('admin-tournament-seats').value);
+
       if(name) tournamentData.name = name;
       if(date) tournamentData.date = date;
+      if(seats && seats > 0) tournamentData.maxSeats = seats;
 
       localStorage.setItem('tm_tournament', JSON.stringify(tournamentData));
       alert("Turnier-Einstellungen gespeichert!");
@@ -477,8 +485,11 @@
       }
       const nameInput = document.getElementById('admin-tournament-name');
       const dateInput = document.getElementById('admin-tournament-date');
+      const seatsInput = document.getElementById('admin-tournament-seats');
+
       if(nameInput) nameInput.value = tournamentData.name;
       if(dateInput) dateInput.value = tournamentData.date;
+      if(seatsInput) seatsInput.value = tournamentData.maxSeats || 39;
     }
 
     function switchTab(tabId) {
@@ -574,14 +585,13 @@
       ticketTbody.innerHTML = '';
       
       if(userTickets.length === 0) {
-        ticketTbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Noch keine Ticket-Buchungen vorhanden.</td></tr>`;
+        ticketTbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-500">Noch keine Ticket-Buchungen vorhanden.</td></tr>`;
       } else {
         userTickets.forEach((t, idx) => {
           const isDelivered = t.delivered;
           ticketTbody.innerHTML += `
             <tr class="border-b border-slate-800/50">
               <td class="p-3 font-semibold text-slate-200">${t.player}</td>
-              <td class="p-3 font-bold ${t.type === 'VIP' ? 'text-amber-400' : 'text-indigo-400'}">${t.type}</td>
               <td class="p-3">
                 ${isDelivered 
                   ? `<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg inline-flex items-center gap-1">✓ Übergeben</span>`
@@ -631,7 +641,7 @@
           <div class="bg-slate-900 p-3 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
             <div>
               <b class="text-white">${tournamentData.name}</b><br>
-              <span class="${ticket.type === 'VIP' ? 'text-amber-400' : 'text-indigo-400'} font-bold">${ticket.type}-Ticket</span>
+              <span class="text-indigo-400 font-bold">Zuschauer-Ticket</span>
               <span class="ml-2 ${ticket.delivered ? 'text-emerald-400' : 'text-amber-400'}">
                 (${ticket.delivered ? '✓ Im Ingame-Inventar' : '⏳ Ausstehende Übergabe'})
               </span>
